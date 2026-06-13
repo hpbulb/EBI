@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBI Registration Form</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://kit.fontawesome.com/faff1bf098.js" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body class="bg-linear-to-bl from-violet-800 to-blue-900 py-10">
+
+    <!-- HEADER -->
+    <div class="flex flex-col items-center justify-center text-center mb-10">
+
+        <img src="Eden BULB LOGO OR BARGE.png" alt="School Logo" class="w-24 mb-3">
+
+        <h1 class="text-4xl font-bold text-white">
+            EBI Registration Form
+        </h1>
+
+        <p class="text-gray-300 text-lg mt-2">
+            Academic Year 2055/2056
+        </p>
+
+    </div>
+
+    <!-- FORM CONTAINER -->
+    <div class="flex flex-col justify-center items-center">
+        <div class="text-5xl font-bold text-white ml-6">
+            <h2>Student Information</h2>
+        </div> <br>
+        <form action="../Backend/EBI_insert.php" method="POST" enctype="multipart/form-data"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm p-8 rounded-2xl  border border-yellow-300">
+            <!-- SURNAME -->
+            <div>
+                <label class="text-white font-semibold">
+                    Surname
+                </label>
+                <br>
+                <input type="text" name="surname" placeholder="Surname" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- FIRSTNAME -->
+            <div>
+                <label class="text-white font-semibold">
+                    Firstname
+                </label>
+                <br>
+                <input type="text" name="firstname" placeholder="Firstname" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- MIDDLENAME -->
+            <div>
+                <label class="text-white font-semibold">
+                    Middlename
+                </label>
+                <br>
+                <input type="text" name="middlename" placeholder="Middlename" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- DOB -->
+            <div>
+                <label class="text-white font-semibold">
+                    Date Of Birth
+                </label>
+                <br>
+                <input type="date" name="date_of_birth" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- GENDER -->
+            <div>
+                <label class="text-white font-semibold">
+                    Gender
+                </label>
+                <br>
+                <select name="gender" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white outline-none border border-white/20 focus:border-yellow-400">
+
+                    <option value="" class="text-black">
+                        Select Gender
+                    </option>
+
+                    <option value="Male" class="text-black">
+                        Male
+                    </option>
+
+                    <option value="Female" class="text-black">
+                        Female
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- PASSPORT -->
+            <div>
+                <label class="text-white font-semibold">
+                    Passport
+                </label>
+                <br>
+                <input type="file" name="passport"
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- STATUS -->
+            <div>
+                <label class="text-white font-semibold">
+                    Status
+                </label>
+                <br>
+                <select name="status" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white outline-none border border-white/20 focus:border-yellow-400">
+
+                    <option value="" class="text-black">
+                        Select Status
+                    </option>
+
+                    <option value="Single" class="text-black">
+                        Single
+                    </option>
+
+                    <option value="Married" class="text-black">
+                        Married
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- STATE -->
+            <div>
+                <label class="text-white font-semibold">
+                    State Of Origin
+                </label>
+                <br>
+                <input type="text" name="state_of_origin" placeholder="State Of Origin" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- LGA -->
+            <div>
+                <label class="text-white font-semibold">
+                    LGA Of Origin
+                </label>
+                <br>
+                <input type="text" name="lga_of_origin" placeholder="LGA Of Origin" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- CITY -->
+            <div>
+                <label class="text-white font-semibold">
+                    City
+                </label>
+                <br>
+                <input type="text" name="city" placeholder="City" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- NATIONALITY -->
+            <div>
+                <label class="text-white font-semibold">
+                    Nationality
+                </label>
+                <br>
+                <input type="text" name="nationality" placeholder="Nationality" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- HOUSE ADDRESS -->
+            <div>
+                <label class="text-white font-semibold">
+                    House Address
+                </label>
+                <br>
+                <input type="text" name="houseaddress" placeholder="House Address" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white placeholder:text-gray-300 outline-none border border-white/20 focus:border-yellow-400">
+            </div>
+
+            <!-- RELIGION -->
+            <div>
+                <label class="text-white font-semibold">
+                    Religion
+                </label>
+                <br>
+                <select name="religion" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white outline-none border border-white/20 focus:border-yellow-400">
+
+                    <option value="" class="text-black">
+                        Select Religion
+                    </option>
+
+                    <option value="Christian" class="text-black">
+                        Christian
+                    </option>
+
+                    <option value="Muslim" class="text-black">
+                        Muslim
+                    </option>
+
+                </select>
+            </div>
+
+            <div>
+                <label for="email"  class="text-white font-semibold"> Email</label>
+<br>                
+                <input type="email" name="email" placeholder="example@gmail.com" required
+                    class="w-72 mt-2 p-3 rounded-lg bg-white/20 text-white">
+            </div>
+
+            <!-- BUTTON -->
+            <div class="lg:col-span-3 flex justify-center mt-6">
+
+                <button type="submit"
+                    class="bg-yellow-600 hover:bg-yellow-500 transition duration-300 text-white font-bold px-10 py-3 rounded-xl shadow-lg">
+                    Submit Registration
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

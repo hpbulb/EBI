@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hosanna Praise Bulb International - Official Website</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://kit.fontawesome.com/faff1bf098.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="Hosanna Final Delivery-02.png" sizes="68x68">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="https://use.typekit.net/blz3niq.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Staatliches&display=swap" rel="stylesheet">
+    <style>
+        /* *{
+            padding: 0;
+            margin: 0;
+        } */
+        #title {
+            font-family: "Staatliches", sans-serif;
+            font-weight: 700;
+            font-size: 2.4em;
+            margin-bottom: 0.1em;
+            text-align: right;
+            padding: 0 20px;
+        }
+
+        .des {
+            letter-spacing: 0.1em;
+            font-weight: 400;
+            font-style: normal;
+            transition: 1s ease-in;
+            font-family: 'Sarala', sans-serif;
+            text-align: justify;
+            text-justify: inter-word;
+            padding: 50px;
+        }
+
+        .des1 {
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            font-style: normal;
+            transition: 1s ease-in;
+            font-family: 'Sarala', sans-serif;
+            text-align: justify;
+            padding: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body class="">
+    <nav class="bg-transparent fixed w-full z-10 mb-5" id="navbar">
+        <div class="flex justify-between items-center p-4">
+            <div class="flex items-center gap-2">
+                <img src="../logo/Hosanna Final Delivery-02.png" alt="..."
+                    class="w-20 h-20 border border-blue-500 rounded-xl bg-blue-800">
+                <h3 class="nav-link text-white font-bold">HOSANNA PRAISE <br> BULB INTERNATIONAL</h3>
+            </div>
+
+
+            <ul class="flex items-center gap-3 p-2 m-3 hidden md:flex  font-semibold text-sm">
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="index.html" class="nav-link text-white">HOME</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="abtHPBI.html" class="nav-link text-white">ABOUT US</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#" class="nav-link text-white">THE MANDATE</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#" class="nav-link text-white">MEDIA CENTER</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#" class="nav-link text-white">RESOURCES</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="EBI.html" class="nav-link text-white">EDUCATION</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#" class="nav-link text-white">CONTACT US</a>
+                </li>
+                <li
+                    class="hover:decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#" class="nav-link text-white">GIVE ONLINE</a>
+                </li>
+            </ul>
+
+            <button id="menu-btn"
+                class="md:hidden text-2xl text-white cursor-pointer p-2 focus:outline-nonea sm:text-indigo-"
+                aria-label="Toggle Menu">
+                <i class="fa-solid fa-grip"></i>
+            </button>
+        </div>
+        <!--Mobile Menu-->
+        <div id="menu"
+            class="lg:hidden absolute top-20 right-4 w-58 h-109 bg-white rounded-2xl opacity-0 scale-95 -translate-y-2 pointer-events-none transition-all duration-500 ease-in-out overflow-hidden">
+            <ul class="flex flex-col items-center gap-3 p-2 m-3   text-red font-semibold text-sm">
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="index.html">HOME</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="abtHPBI.html">ABOUT US</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#">THE MANDATE</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#">MEDIA CENTER</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#">RESOURCES</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="EBI.html">EDUCATION</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#">CONTACT US</a>
+                </li>
+                <li
+                    class="mb-5 decoration-red-700 focus-outline hover:underline hover:decoration-dotted hover:underline-offset-8">
+                    <a href="#">GIVE ONLINE</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--Hero Section-->
+
+    <section class="sticky top-0  h-100 flex items-center justify-center bg-[url(../assets/VH.png)]">
+        <div class="absolute inset-0 bg-black/50"></div>
+
+    </section>
+    <!--Hero Section close-->
+
+    <!---->
+    <div class="bg-white relative" id="hero">
+        <div class="grid lg:grid-cols-2 sm:grid-cols-1  transition duration-300 ease-in p-20 gap-[-0]">
+            <div class="bg-[#F8F9FA] shadow-lg relative w-[35em] mt-10 flex flex-col md:order-2 order-2" id="hero">
+                <div class="relative flex flex-col" id="title">
+                    <span class="text-black">PASTOR MRS QUEENETTE ULU</span>
+                    <span class="text-[#6C757D]">FOUNDER & PRESIDENT, HOSANNA PRAISE BULB INTERNATIONAL</span>
+                </div>
+                <hr class="w-130 mx-auto  border-0 h-[1px] bg-[#1E295F]/10">
+                <div class="text-gray-800 leading-relaxed space-y-4 text-base">
+                    <p class="des">Pastor Mrs Queentte Ulu received a call into the ministry through a heavenly vision,
+                        where he saw a
+                        lineup of battered, beaten, tattered, deformed, groaning for escape, he began sobbing with the.
+                        In
+                        response to his question, ‘but why Lord?’ God answered, “But from the beginning it was not so,
+                        and
+                        now the hour has come to liberate the whole world from all oppression of the devil through the
+                        preaching of the world of faith and I AM sending you to undertake this task.” Today, he stands
+                        as an
+                        Apostle of Faith to the nations, the impact of whose ministry has continued to spread across
+                        many
+                        nations of the world. As an accomplished author, he has written over 100 titles, which
+                        circulates
+                        both in hard and online stores around the world. A number of these titles have been translated
+                        to
+                        other major languages of the world including French, Chinese, Spanish and others He is the
+                        Founder
+                        and President of Living Faith Church worldwide, aka Winners’ Chapel International and presently
+                        oversees over 21,000 churches across Nigeria and several thousand across six major continents of
+                        the
+                        world. He is the founding and Senior Pastor of the Faith Tabernacle, Canaanland Ota, Nigeria,
+                        the
+                        international Headquarter of the Church, which is reputed to be the largest single congregation
+                        in
+                        the world As a leader of renown, he has redefined leadership as an evolution of values. Today,
+                        he is
+                        spearheading a revolution in education across the nation, through his network of primary and
+                        secondary across the nation and the establishment of two thriving universities, namely, Covenant
+                        university, Ota, Lagos and Landmark University Omuaran, Kwara State, both in Nigeria.</p>
+
+                </div>
+
+            </div>
+            <div class="md:order-1 order-1  ">
+                <img src="#" alt="."
+                    class="w-full max-w-md rounded-2xl shadow-md shadow-white object-cover border-4 border-white transform hover:scale-102 transition duration-300 col-span-3">
+            </div>
+        </div>
+        <div class="grid lg:grid-cols-2 sm:grid-cols-1  transition duration-300 ease-in sm:p-10 lg:p-30 ">
+            <div class="bg-[#F8F9FA] shadow-lg px-4 py-3 md:w-110 sm:w-150 rounded-lg sm:mb-4">
+                <h2 class="text-[#212529] font-[Staatliches] text-5xl font-[700] mt-5 mb-4 text-center">Who is Queenette
+                    Ulu?
+                </h2>
+                <hr class="w-100 mx-auto  border-0 h-[1px] bg-[#1E295F]/10 m">
+                <div class="text-gray-800 leading-relaxed space-y-4 text-base ">
+
+
+                    <p class="des1 ">- Born on July 5th, 1975. He began his academic career in Architecture and later
+                        went
+                        on to obtain
+                        a PhD in Human Development, from Honolulu University Hawaii, USA.
+                        <br> <br> <br>
+                        - Born again – Feb. 19, 1969, at 15
+                        <br> <br> <br>
+                        - Received a called to full time ministry – May 2, 1981 at 26
+                        <br> <br> <br>
+                        - Began his teaching ministry through a weekly fellowship meeting called ‘Faith Liberation Hour’
+                        and
+                        a
+                        monthly seminal that covers Friday evening – May 29, 1981
+                        <br> <br> <br>
+                        - Began his Church ministry and planted the 1st Church in Kaduna, called, Living Faith World
+                        Outreach –
+                        Dec. 11, 1983
+                        <br> <br> <br>
+                        - Published and released his first 2 books. ‘The Miracle seed and the law of Faith’ – April 25,
+                        1985
+                        <br> <br> <br>
+                        - Founded the Word of Faith Bible Institute, which today runs across many nations of the world –
+                        Sep. 1:
+                        1986
+                        <br> <br> <br>
+                        - Began church planting work in the northern part of Nigeria – May 1987
+                        <br> <br> <br>
+                        - His mission acquired a 13-acre property in a prime area of Kaduna city called Garden of Faith
+                        –
+                        Sep.
+                        1989
+                        <br> <br> <br>
+                        - Moved into Lagos, following a divine mandate, “Arise get down to Lagos and raise me a people”
+                        –
+                        Sep.
+                        24,1989
+                        <br> <br> <br>
+                        - Founded Dominion Publishing House, whose printing press has today grown to an industrial scale
+                        and
+                        currently publishing Bibles – July 1992
+                        <br> <br> <br>
+                        - Led a great revival at the Lagos church that took the church from about 3,500 to 50,000 within
+                        5
+                        years
+                        – 1994-1999
+                        <br> <br> <br>
+                        - Following another divine mandate “the harvest of Africa is overripe, rush in and preserve it
+                        from
+                        decadence, embarked on Mission to Africa. Today, his mission now has a strong presence in over
+                        41
+                        nations of Africa – Jan. 1994
+                        <br> <br> <br>
+                        - His Mission took delivery of the first mission aircraft – Sept. 18, 1996
+                        <br> <br> <br>
+                        - His mission acquired 530 acres of property in the outskirts of Ota, a suburb of Lagos which is
+                        today
+                        called Canaanland – May 1998
+                        <br> <br> <br>
+                        - 50,000-seat capacity sanctuary called Faith Tabernacle, was built and dedicated within one
+                        year to
+                        the
+                        glory – Sept. 1998 – Sept. 1999
+                        <br> <br> <br>
+                        - Started the annual convocation of Winners worldwide, tagged “Shiloh” which now transmits to
+                        about
+                        177
+                        nations real time and draws delegates from between 50 and 60 nations annually, with millions
+                        gathering
+                        at various viewing centers across Nigeria and many other nations of the world – 1999
+                        <br> <br> <br>
+                        - Embarked on Mission to the world, covering Europe, North and South America, Asia, Australia
+                        and
+                        Middle
+                        East. – August 2000
+                        <br> <br> <br>
+                        - Founded Covenant University, which is today listed among the Elite Universities of the world –
+                        October
+                        2002
+                        <br> <br> <br>
+                        - Founded Landmark University, a university blazing the trail today within the Nigerian
+                        university
+                        education space – Mar. 2011
+                        <br> <br> <br>
+                        - Led a great church growth revival that doubled the attendance of the Lagos church twice within
+                        6
+                        months. Today, the Faith Tabernacle is said to be the largest local church congregation in the
+                        world,
+                        which runs four services every Sunday with about 38,000 Home cells – May – Oct. 2015
+                        <br> <br> <br>
+                        - By divine instruction, led the planting of over 5,000 churches across Nigeria within one year
+                        –
+                        2019
+                        <br> <br> <br>
+                        - By divine signal, led the planting of over 10,000 churches within one year across Nigeria and
+                        over
+                        1,200 others across 35 other nations of the world in spite of the restriction by the global
+                        lockdown
+                        occasioned by covid-19 pandemic. – 2020
+                        <br> <br> <br>
+                        - By divine instruction, led the replication of over 21,000 new home cells within one year at
+                        Faith
+                        Tabernacle, which represents about a hundred percent of the existing home cells – 2021
+                        <br> <br> <br>
+                        - Led the planting of Churches in 80 additional nations across 4 continents of the world – 2022
+                        <br> <br> <br>
+                        - Today the construction of the historic 100,000-seat capacity stadium-like sanctuary, whose
+                        foundation
+                        was laid on March 25, 2021, is very much in progress, with God’s hand clearly evident in the
+                        areas
+                        of
+                        speed, supplies, etc. To God alone be all the glory.
+                    </p>
+                </div>
+            </div>
+            <div class="bg-[#343A40] shadow-lg px-4 py-3 lg:w-110 sm:w-150 rounded-lg lg:h-full sm:h-full">
+                <h2 class="font-[Staatliches] text-5xl font-[700] mt-2  text-start text-white">Awards and
+                    recognitions:</h2>
+                <hr class="text-white mb-5">
+                <div class="text-gray-800 leading-relaxed space-y-4 text-base flex flex-col">
+                    <span class="des1 text-white ">1. Fellow of the Nigerian Academy of
+                        Education (FNAE)
+                        <br> <br> <br>
+                        2. Award in recognition of Leadership in Enhancing Academic and Research Excellence in Higher
+                        Education – Southern University and A&M College, Baton Rouge, LA (2011).
+                        <br> <br> <br>
+                        3. Distinguished Award for Excellence in Education, Administration and Leadership – Obafemi
+                        Awolowo
+                        University, Ile-Ife (2012).
+                        <br> <br> <br>
+                        4. Fellow of the Nigerian Society for Financial Research (FNSFR)
+                        <br> <br> <br>
+                        5. Fellow of the Nigerian Institute of Strategic Management (FNISM).
+                        <br> <br> <br>
+                        6. Honorary Doctor of Divinity – Bethel Graduate School of Theology Riverside California
+                        <br> <br> <br>
+                        7. National Honour: A road was named after him by the Federal Government of Nigeria, in the
+                        Federal
+                        Capital Territory, Abuja (2008).
+                        <br> <br> <br>
+                        8. Listed among 100 most reputable people on earth, 2 times running</span>
+
+                    <h2 class="font-[Staatliches] text-5xl font-[700] mt-3  text-start text-white">Positions Currently
+                        held:</h2>
+                    <hr class="text-white mb-5">
+                    <span class="des1 text-white">
+                        1. Founder and President, Living Faith Church Worldwide aka Winners’ Chapel International – 1983
+                        till date
+                        <br> <br> <br>
+                        2. President, Word of Faith Bible Institute – 1986 till date
+                        <br> <br> <br>
+                        3. President, Dominion Publishing House – 1992 till date
+                        <br> <br> <br>
+                        4. Chancellor and Chairman, Board of Regents, Covenant University, Ota, Nigeria – 2002 till date
+                        <br> <br> <br>
+                        5. Chancellor and Chairman, Board of Regents, Landmark University, Omuaran, Nigeria – 2011 till
+                        date
+
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <script>
+        const nav = document.getElementById("navbar");
+        const navlink = document.querySelectorAll(".nav-link");
+
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 300) {
+                nav.classList.add("bg-white",);
+
+                navlink.forEach(link => {
+                    link.classList.remove("text-white");
+                    link.classList.add("text-[#1E295F]");
+                });
+
+            } else {
+                nav.classList.remove("bg-white",);
+
+                navlink.forEach(link => {
+                    link.classList.remove("text-[#1E295F]");
+                    link.classList.add("text-white");
+                });
+            }
+        });
+
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.remove(
+                        "opacity-0",
+                        "translate-y-10"
+                    );
+
+                    entry.target.classList.add(
+                        "opacity-100",
+                        "translate-y-0"
+                    );
+
+                    observer.unobserve(entry.target);
+                }
+            });
+
+        }, observerOptions);
+
+        document.querySelectorAll(".info-des").forEach((el) => {
+            observer.observe(el);
+        });
+        const menuBtn = document.getElementById("menu-btn");
+        const menu = document.getElementById("menu");
+
+        menuBtn.addEventListener("click", () => {
+            menu.classList.toggle("opacity-0");
+            menu.classList.toggle("scale-95");
+            menu.classList.toggle("-translate-y-2");
+            menu.classList.toggle("pointer-events-none");
+
+            if (icon.classList.contains("fa-grip")) {
+                icon.classList.remove("fa-grip");
+                icon.classList.add("fa-xmark");
+            } else {
+                icon.classList.remove("fa-xmark");
+                icon.classList.add("fa-grip")
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
