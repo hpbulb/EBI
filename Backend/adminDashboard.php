@@ -1,14 +1,59 @@
+
 <?php
 session_start();
+require "sch_db.php";
 
-if ( !isset( $_SESSION[ 'admin_id' ] ) ) {
-    header( 'Location: admin.php' );
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: admin.php");
     exit();
 }
 
-$username  = $_SESSION[ 'username' ] ?? 'Admin';
-?>
+$username = $_SESSION['admin_name']
+          ?? $_SESSION['admin_username']
+          ?? 'Admin';
 
+$totalStudents = $pdo->query("
+    SELECT COUNT(*)
+    FROM students
+")->fetchColumn();
+
+$verifiedStudents = $pdo->query("
+    SELECT COUNT(*)
+    FROM students
+    WHERE verified='verified'
+")->fetchColumn();
+
+$pendingStudents = $pdo->query("
+    SELECT COUNT(*)
+    FROM students
+    WHERE verified='pending'
+")->fetchColumn();
+
+$totalPayments = $pdo->query("
+    SELECT COUNT(*)
+    FROM payments
+")->fetchColumn();
+
+$verifiedPayments = $pdo->query("
+    SELECT COUNT(*)
+    FROM payments
+    WHERE payment_status='Verified'
+")->fetchColumn();
+
+$pendingPayments = $pdo->query("
+    SELECT COUNT(*)
+    FROM payments
+    WHERE payment_status='Pending'
+")->fetchColumn();
+
+$totalDocuments = $pdo->query("
+    SELECT COUNT(*)
+    FROM documents
+")->fetchColumn();
+
+$notificationCount = $pendingStudents + $pendingPayments;
+
+?>
 <!DOCTYPE html>
 <html lang='en'>
 
@@ -16,7 +61,6 @@ $username  = $_SESSION[ 'username' ] ?? 'Admin';
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>EBI - ADMIN DASHBOARD</title>
-
     <script src='https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4'></script>
     <script src='https://kit.fontawesome.com/faff1bf098.js' crossorigin='anonymous'></script>
 </head>
@@ -61,7 +105,7 @@ $username  = $_SESSION[ 'username' ] ?? 'Admin';
                         </a>
                     </li>
                     <li class='mb-3'>
-                        <a href='#' class='flex items-center p-2 text-gray-900 gap-1 gap-1 '>
+                        <a href='verify.php' class='flex items-center p-2 text-gray-900 gap-1 gap-1 '>
                             <i class='fa-solid fa-coins'></i>
                             <span class='ml-1'>Payment</span>
                         </a>
@@ -137,16 +181,18 @@ $username  = $_SESSION[ 'username' ] ?? 'Admin';
         </div>
     </nav>
     <!--Dashboard Information-->
-    <div class='grid lg:grid-cols-4 px-4 py-6 lg:ml-44 md:ml-33 sm:ml-43 x  gap-4'>
-        <div class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
+    <div class='grid lg:grid-cols-5 px-4 py-6 lg:ml-44 md:ml-33 sm:ml-43 x  gap-4'>
+        <div
+            class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
             <i class="fa-solid fa-users text-2xl text-"></i>
             <div class="flex flex-col">
                 <span class="text-sm font-semibold text-indigo-800">Number Of Students</span>
-                <span class="text-xl text-indigo-800">2,500</span>
+                <span class="text-xl text-indigo-800"><?= $totalStudents ?></span>
                 <span class="text-[8px] text-gray-600">+12 this week</span>
             </div>
         </div>
-        <div class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
+        <div
+            class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
             <i class="fa-solid fa-id-badge text-2xl text-"></i>
             <div class="flex flex-col">
                 <span class="text-sm font-semibold text-indigo-800">Total Teachers</span>
@@ -154,22 +200,38 @@ $username  = $_SESSION[ 'username' ] ?? 'Admin';
                 <span class="text-[8px] text-gray-600">+50 this week</span>
             </div>
         </div>
-        <div class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
+        <div
+            class="bg-white font-bold flex p-3 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
             <i class="fa-solid fa-hourglass text-2xl text-"></i>
             <div class="flex flex-col">
                 <span class="text-sm font-semibold text-indigo-800">Pending Payment</span>
-                <span class="text-xl text-indigo-800">50</span>
+                <span class="text-xl text-indigo-800"><?= $pendingPayments ?></span>
                 <span class="text-[8px] text-gray-600">-6 this week</span>
             </div>
         </div>
-        <div class="bg-white font-bold flex p-5 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
+        <div
+            class="bg-white font-bold flex p-5 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
             <i class="fa-solid fa-building-columns text-2xl text-"></i>
             <div class="flex flex-col">
                 <span class="text-sm font-semibold text-indigo-800">Verified Payment </span>
-                <span class="text-xl text-indigo-800">500</span>
+                <span class="text-xl text-indigo-800"><?= $verifiedPayments ?></span>
                 <span class="text-[8px] text-gray-600">+20 this week</span>
             </div>
         </div>
+        <div
+            class="bg-white font-bold flex p-5 rounded-lg gap-6 justify-center items-center shadow-md shadow-indigo-700">
+            <i class="fa-solid fa-user-check text-2xl text-"></i>
+            <div class="flex flex-col">
+                <span class="text-sm font-semibold text-indigo-800">Verified Student </span>
+                <span class="text-xl text-indigo-800"><?= $verifiedStudents ?></span>
+                <span class="text-[8px] text-gray-600">+20 this week</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg-white p-6 rounded-lg shadow lg:ml-44 md:ml-33 sm:ml-43">
+        <canvas id="myChart" class="w-10"></canvas>
     </div>
 
 
@@ -177,13 +239,48 @@ $username  = $_SESSION[ 'username' ] ?? 'Admin';
 
 
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src=/js/adminDash.js></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
 
+            fetch("chart.php")
+                .then(response => response.json())
+                .then(data => {
 
+                    console.log(data);
 
+                    const labels = data.map(item => item.month);
+                    const students = data.map(item => item.total_students);
 
+                    const ctx = document.getElementById("myChart");
 
+                    new Chart(ctx, {
+                        type: "polarArea",
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Students",
+                                data: students,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
 
-    <script src="../js/adminDash.js"></script>>
+                })
+                .catch(error => console.error(error));
+
+        });
+
+    </script>
 </body>
 
 </html>

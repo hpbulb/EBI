@@ -182,7 +182,7 @@ class = 'md:hidden inline-flex items-center p-2 mt-3 ms-3 text-sm text-purple-90
 
         </div>
 
-        <div class=''> <img src="uploads/<?php echo $_SESSION['passport']; ?>"
+        <div class=''> <img src="../uploads/<?php echo $_SESSION['passport']; ?>"
                 class='w-10 h-10 rounded-full object-cover border-4 border-indigo-300 '></div>
     </nav>
 

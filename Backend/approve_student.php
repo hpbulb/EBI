@@ -1,6 +1,6 @@
 <?php
 
-include "admin/sch_db.php";
+include "sch_db.php";
 
 $id = $_GET["id"];
 

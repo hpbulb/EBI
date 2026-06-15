@@ -39,15 +39,16 @@
                 </svg>example@gmail.com</span>
         </div>
         <div class=" text-white" id="conInfo">
-            <span class="hidden md:flex items-center gap-1 cursor-pointer" id="Stu"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round">
+            <span class="hidden md:flex items-center gap-1 cursor-pointer" id="Stu"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-user-round-icon lucide-user-round">
                     <circle cx="12" cy="8" r="5" />
                     <path d="M20 21a8 8 0 0 0-16 0" />
                 </svg>Student Portal</span>
-            <span class="hidden md:flex  items-center gap-1 cursor-pointer" id="btn2">Apply Now <svg xmlns="http://www.w3.org/2000/svg" width="14"
-                    height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"
+            <span class="hidden md:flex  items-center gap-1 cursor-pointer" id="btn2">Apply Now <svg
+                    xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-file-user-icon lucide-file-user">
                     <path
                         d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
@@ -60,7 +61,7 @@
     <!--Top Navbar End-->
 
     <!--Bottom Navigation Bar-->
-    <nav class="bg-white p-5 shadow-md sticky top-0 z-20">
+    <nav class="bg-white p-5 shadow-md sticky top-0 z-20 flex justify-between items-center gap-2">
         <div class="flex justify-between  gap-2 ">
             <div class="flex items-center text-md gap-2">
                 <img src="../logo/EDEN BULB LOGO OR BARGE.png" alt="School_logo" title="School_logo" width="50">
@@ -71,8 +72,9 @@
             </div>
             <!-- Desktop Menu-->
 
-            <ul class="flex gap-2 font-bold items-center text-gray-600 hidden md:flex">
-                <li><a href="index.html" class="underline-offset-8 underline rounded decoration-[#D29D3A] ">Home</a>
+            <ul class=" gap-2 font-bold items-center text-gray-600 hidden md:flex">
+                <li><a href="/EBI/index.html"
+                        class="underline-offset-8 underline rounded decoration-[#D29D3A] ">Home</a>
                 </li>
                 <li><a href="abtEBI.html">About Us</a></li>
                 <li><a href="#">Academics</a></li>
@@ -82,14 +84,19 @@
                 <li><a href="#">Contact Us</a></li>
             </ul>
         </div>
+        <button id="menu-btn"
+                    class="md:hidden text-2xl text-gray-800 cursor-pointer p-2 focus:outline-nonea sm:text-indigo-"
+                    aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars" id="menu-icon"></i>
+                </button>
     </nav>
     <!--Bottom Navbar End-->
 
     <!--Hero Section-->
     <section
-        class="sticky top-0 flex justify-center text-center items-center h-100 bg-[url(../assets/bg2.jpg)] bg-no-repeat bg-cover bg-center">
+        class="sticky top-0 z-[-20] flex justify-center text-center items-center h-119 bg-[url(../assets/bg2.jpg)] bg-no-repeat bg-cover bg-center">
         <div class="bg-black/30  inset-0 absolute"></div>
-        <div class="flex flex-col mb-2 text-white z-20 p-6">
+        <div class="flex flex-col mb-2 text-white z-[20] p-6">
             <span
                 class="lg:text-5xl sm:text-5xl  font-[Sarala] font-bold from-gray-800 mb-2 bg-linear-to-r rounded-lg">Inspiring
                 Minds.</span>
@@ -116,9 +123,8 @@
         </div>
     </section>
     <!--Hero Section close-->
-
     <!-- Content Section-->
-    <div class="bg-white relative z-30">
+     <div class="bg-white relative z-10 hidden md:flex flex-col">
 
         <div class="flex flex-col items-center py-10">
             <span class="text-2xl font-bold text-gray-800">
@@ -186,14 +192,15 @@
             </div>
         </div>
 
-    </div>
+    </div> 
 
 
+        <div id="Menu"></div>
+        
+        <div id="Footer"></div>
 
-
-
-
-
+    <script type="module" src="/src/main.jsx"></script>
     <script src="../js/EBI.js"></script>
 </body>
+
 </html>

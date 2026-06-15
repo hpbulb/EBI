@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $passport = $_FILES["passport"]["name"];
     $tmp_name = $_FILES["passport"]["tmp_name"];
 
-    move_uploaded_file($tmp_name, "uploads/" . $passport);
+    move_uploaded_file($tmp_name, "../uploads/" . $passport);
 
     // INSERT
     $sql = "INSERT INTO students (
