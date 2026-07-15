@@ -1,19 +1,15 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
-// import './App.css'/
-// import Footer from "./Footer.jsx"
-import Mobile from "./Mobile.jsx"
+import Navbar from "./TNavbar.jsx";
+import BNavbar  from "./BNavbar.jsx"
+import Hero from "./Hero.jsx";
 
 function App() {
-  // const [count, setCount] = useState(0)
-
   return (
     <>
-    <Mobile/> 
+      <Navbar />
+      <BNavbar/>
+      <Hero/>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
