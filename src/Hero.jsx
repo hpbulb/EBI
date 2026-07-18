@@ -1,0 +1,26 @@
+
+
+function Hero() {
+    return (
+        <div className="bg-[url(https://hpbulb.github.io/EBI/assets/bg2.jpg)] relative bg-cover bg-center bg-no-repeat text-white py-20 px-4 sm:px-6 lg:px-8 h-full justify-center items-center flex-4 gap-4">
+            <div className="absolute inset-0 bg-black/50"></div>
+            <div className="relative z-10 text-center">
+                 <div className="max-w-7xl mx-auto text-center mt-20">
+                <h1 className="text-4xl font-bold mb-4">Welcome to Eden Bulb International School</h1>
+                <p className="text-lg mb-8">Providing quality education in a nurturing environment</p>
+            </div>
+
+            <div className="sm:flex-1 lg:flex justify-center gap-4 items-center max-w-7xl mx-auto text-center">
+                <div className="bg-gray-700 px-3 py-4 rounded-lg text-amber-50 hover:bg-gray-600">
+                    Learn More
+                </div>
+                <div className="bg-transparent px-4 py-3 border border-white rounded-lg text-white mt-2 hover:bg-white transition-all cursor-pointer duration-300 hover:text-gray-700">
+                    Apply Now
+                </div>
+            </div>
+            </div>
+        </div>
+    );
+}
+
+export default Hero;

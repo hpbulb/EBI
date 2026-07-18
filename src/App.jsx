@@ -1,19 +1,45 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from './assets/vite.svg'
-// import heroImg from './assets/hero.png'
-// import './App.css'/
-// import Footer from "./Footer.jsx"
-import Mobile from "./Mobile.jsx"
+import Navbar from "./TNavbar.jsx";
+import BNavbar from "./BNavbar.jsx";
+import Hero from "./Hero.jsx";
+import Content from "./Content.jsx";
+import Footer from "./Footer.jsx";
+import { Routes, Route } from "react-router-dom";
+import About from "./about.jsx";
+import NewsEvents from "./NewsEvents.jsx";
+import Academics from "./Academics.jsx";
+import Admissions from "./Admissions.jsx";
+import StudentLife from "./StudentLife.jsx";
+import Contact from "./Contact.jsx";
+import Registration from "./Registration.jsx";
 
 function App() {
-  // const [count, setCount] = useState(0)
-
   return (
     <>
-    <Mobile/> 
+      <Navbar />
+      <BNavbar />
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <Hero />
+              <Content />
+            </>
+          }
+        />
+
+        <Route path="/about" element={<About />} />
+        <Route path="/news-events" element={<NewsEvents />} />
+        <Route path="/academics" element={<Academics />} />
+        <Route path="/admission" element={<Admissions />} />
+        <Route path="/student-life" element={<StudentLife />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/registration" element={<Registration />}/>
+      </Routes>
+      <Footer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
