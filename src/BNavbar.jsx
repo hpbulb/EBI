@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 function BNavbar() {
     const [open, setOpen] = useState(false);
 
     return (
-        <nav className="p-4 bg-white shadow">
+        <nav className="p-4 bg-white shadow sticky top-0 z-50">
             <div className="flex justify-between items-center">
 
                 <div className="flex items-center gap-2">
@@ -22,20 +23,20 @@ function BNavbar() {
                 </div>
 
                 {/* Desktop Menu */}
-                <ul className="hidden md:flex gap-6 items-center">
-                    <li>Home</li>
-                    <li>About Us</li>
-                    <li>Academics</li>
-                    <li>Admission</li>
-                    <li>Student Life</li>
-                    <li>News & Events</li>
-                    <li>Contact Us</li>
+                <ul className="hidden gap-6 items-center max-w-6xl  md:inline-flex">
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/about">About Us</Link></li>
+                    <li><Link to="/academics">Academics</Link></li>
+                    <li><Link to="/admission">Admission</Link></li>
+                    <li><Link to="/student-life">Student Life</Link></li>
+                    <li><Link to="/news-events">News & Events</Link></li>
+                    <li><Link to="/contact">Contact Us</Link></li>
                 </ul>
 
                 {/* Mobile Button */}
                 <button
                     onClick={() => setOpen(!open)}
-                    className="md:hidden px-3 py-2 bg-gray-900 rounded-full text-white hover:scale-105 cursor-pointer transition duration-400 hover:shadow font-semibold"
+                    className="md:hidden px-3 py-2 bg-gray-900 flex justify-center items-center w-10 h-10 rounded-full text-white hover:scale-105 cursor-pointer transition duration-400 hover:shadow font-semibold"
                 >
                     <FontAwesomeIcon icon={faBars} />
                 </button>
@@ -45,13 +46,13 @@ function BNavbar() {
             {open && (
                 <div className="md:hidden mt-2 bg-white rounded-lg ">
                     <ul className="flex flex-col p-4 gap-4">
-                        <li>Home</li>
-                        <li>About Us</li>
-                        <li>Academics</li>
-                        <li>Admission</li>
-                        <li>Student Life</li>
-                        <li>News & Events</li>
-                        <li>Contact Us</li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/academics">Academics</a></li>
+                        <li><a href="/admission">Admission</a></li>
+                        <li><a href="/student-life">Student Life</a></li>
+                        <li><a href="/news-events">News & Events</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
                     </ul>
                 </div>
             )}
