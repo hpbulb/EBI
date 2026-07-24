@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base: '/EBI/',
+  base: process.env.VITE_BASE_PATH ?? (process.env.VERCEL ? '/' : '/EBI/'),
   publicDir: false,
   build: {
     outDir: 'build',
