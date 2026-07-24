@@ -1,0 +1,16 @@
+Options -Indexes
+DirectoryIndex build/index.html
+
+RewriteEngine On
+
+# Keep the PHP API and the compiled output accessible as real files.
+RewriteRule ^backend(?:/|$) - [L]
+RewriteRule ^build(?:/|$) - [L]
+
+# Vite emits these assets at the configured application base path.
+RewriteRule ^assets/(.*)$ build/assets/$1 [L]
+RewriteRule ^(favicon\.svg|icons\.svg)$ build/$1 [L]
+
+# Serve the React entry point for the application root and client-side routes.
+RewriteRule ^$ build/index.html [L]
+RewriteRule . build/index.html [L]

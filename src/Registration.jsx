@@ -86,7 +86,7 @@ function Registration() {
       }
 
       const response = await fetch(
-        "http://localhost/EBI/backend/register.php",
+        `${import.meta.env.BASE_URL}backend/register.php`,
         {
           method: "POST",
           body: form,
