@@ -2,7 +2,7 @@
 
 function Hero() {
     return (
-        <div className="bg-[url(https://hpbulb.github.io/EBI/assets/bg2.jpg)] relative bg-cover bg-center bg-no-repeat text-white py-20 px-4 sm:px-6 lg:px-8 h-full justify-center items-center flex-4 gap-4">
+        <div className="bg-[url(https://images.unsplash.com/photo-1592066575517-58df903152f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c2Nob29sJTIwYnVpbGRpbmd8ZW58MHx8MHx8fDA%3D)] relative bg-cover bg-center bg-no-repeat text-white py-20 px-4 sm:px-6 lg:px-8 h-full justify-center items-center flex-4 gap-4">
             <div className="absolute inset-0 bg-black/50"></div>
             <div className="relative z-10 text-center">
                  <div className="max-w-7xl mx-auto text-center mt-20">

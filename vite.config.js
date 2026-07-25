@@ -8,6 +8,14 @@ export default defineConfig({
   build: {
     outDir: 'build',
   },
+  server: {
+    proxy: {
+      '/EBI/backend': {
+        target: 'http://localhost',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),

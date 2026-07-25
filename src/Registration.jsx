@@ -10,7 +10,7 @@ const initialFormData = {
   middleName: "",
   dateOfBirth: "",
   gender: "",
-  maritalStatus: "",
+  // maritalStatus: "",
   nationality: "Nigerian",
   stateOfOrigin: "",
   lga: "",
@@ -166,7 +166,7 @@ function Registration() {
                 />
               </Field>
 
-              <Field label="Middle name" name="middleName">
+              <Field label="Middle name" name="middleName" required>
                 <input
                   id="middleName"
                   name="middleName"
@@ -174,6 +174,7 @@ function Registration() {
                   value={formData.middleName}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 />
               </Field>
 
@@ -207,7 +208,7 @@ function Registration() {
                 </select>
               </Field>
 
-              <Field label="Marital status" name="maritalStatus" required>
+              {/* <Field label="Marital status" name="maritalStatus" required>
                 <select
                   id="maritalStatus"
                   name="maritalStatus"
@@ -223,7 +224,7 @@ function Registration() {
                   <option value="Married">Married</option>
                   <option value="Other">Other</option>
                 </select>
-              </Field>
+              </Field> */}
 
               <Field label="Nationality" name="nationality" required>
                 <input
@@ -273,15 +274,16 @@ function Registration() {
                 />
               </Field>
 
-              <Field label="Religion" name="religion">
+              <Field label="Religion" name="religion" required>
                 <select
                   id="religion"
                   name="religion"
                   value={formData.religion}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 >
-                  <option value="">Select religion (optional)</option>
+                  <option value="">Select religion</option>
                   <option value="Christianity">Christianity</option>
                   <option value="Islam">Islam</option>
                   <option value="Traditional religion">
@@ -551,13 +553,14 @@ function Registration() {
               Health information
             </h2>
             <div className="mt-5 grid gap-5 md:grid-cols-2">
-              <Field label="Blood group" name="bloodGroup">
+              <Field label="Blood group" name="bloodGroup" required>
                 <select
                   id="bloodGroup"
                   name="bloodGroup"
                   value={formData.bloodGroup}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 >
                   <option value="">Select blood group (optional)</option>
                   <option value="A+">A+</option>
@@ -573,7 +576,7 @@ function Registration() {
 
               <Field
                 label="Medical conditions, allergies, or medications"
-                name="medicalInformation"
+                name="medicalInformation" required
               >
                 <textarea
                   id="medicalInformation"
@@ -583,6 +586,7 @@ function Registration() {
                   value={formData.medicalInformation}
                   onChange={handleChange}
                   className={inputClass}
+                  required
                 />
               </Field>
             </div>
