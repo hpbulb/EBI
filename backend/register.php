@@ -1,4 +1,7 @@
 <?php
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
@@ -58,6 +61,9 @@ function ensureStudentsTable(PDO $pdo): void
         "blood_group" => "VARCHAR(10) DEFAULT NULL",
         "medical_information" => "TEXT NULL",
         "passport" => "VARCHAR(255) DEFAULT NULL",
+        "portal_username" => "VARCHAR(50) DEFAULT NULL UNIQUE",
+        "portal_password_hash" => "VARCHAR(255) DEFAULT NULL",
+        "credentials_sent_at" => "TIMESTAMP NULL DEFAULT NULL",
         "created_at" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
     ];
 
@@ -87,6 +93,15 @@ function ensureStudentsTable(PDO $pdo): void
 function valueFromPost(string $name): string
 {
     return trim((string)($_POST[$name] ?? ""));
+}
+
+function paidPaymentEmail(PDO $pdo, string $reference): ?string
+{
+    $reference = preg_replace('/[^A-Za-z0-9_-]/', '', $reference);
+    $statement = $pdo->prepare("SELECT email FROM application_payments WHERE reference = ? AND status = 'paid' AND student_id IS NULL");
+    $statement->execute([$reference]);
+    $email = $statement->fetchColumn();
+    return $email === false ? null : (string) $email;
 }
 
 function handlePassportUpload(): string
@@ -126,6 +141,61 @@ function handlePassportUpload(): string
     }
 
     return "uploads/" . $fileName;
+}
+
+function createTemporaryPassword(): string
+{
+    // Uses an unambiguous alphabet so parents can enter the password easily.
+    $alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    $password = '';
+    for ($index = 0; $index < 12; $index++) {
+        $password .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+    }
+    return $password;
+}
+
+function sendStudentCredentials(string $recipient, string $parentName, string $studentName, int $studentId, string $username, string $temporaryPassword): bool
+{
+    $autoload = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+    $smtpUsername = envValue('SMTP_USERNAME');
+    $smtpPassword = envValue('SMTP_PASSWORD');
+    $from = envValue('SCHOOL_FROM_EMAIL', $smtpUsername);
+    if (!is_file($autoload) || $smtpUsername === '' || $smtpPassword === '' || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
+        return false;
+    }
+    require_once $autoload;
+
+    try {
+        $mail = new PHPMailer(true);
+        $mail->isSMTP();
+        $mail->Host = envValue('SMTP_HOST', 'smtp.gmail.com');
+        $mail->SMTPAuth = true;
+        $mail->Username = $smtpUsername;
+        $mail->Password = $smtpPassword;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = (int) envValue('SMTP_PORT', '587');
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom($from, envValue('SCHOOL_FROM_NAME', 'EBI School'));
+        $mail->addAddress($recipient, $parentName);
+        $mail->isHTML(true);
+        $mail->Subject = 'Student Portal Login Details';
+
+        $safe = static fn(string $value): string => htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        $mail->Body = '<h2>Welcome to EBI School</h2>' .
+            '<p>Dear ' . $safe($parentName) . ',</p>' .
+            '<p>Your child\'s portal account has been created.</p>' .
+            '<table border="1" cellpadding="10" cellspacing="0">' .
+            '<tr><td><strong>Student Name</strong></td><td>' . $safe($studentName) . '</td></tr>' .
+            '<tr><td><strong>Student ID</strong></td><td>' . $studentId . '</td></tr>' .
+            '<tr><td><strong>Username</strong></td><td>' . $safe($username) . '</td></tr>' .
+            '<tr><td><strong>Temporary Password</strong></td><td>' . $safe($temporaryPassword) . '</td></tr>' .
+            '</table><p>Please change the password after first login.</p><p>Regards,<br>EBI School</p>';
+        $mail->AltBody = "Student portal login details\nStudent: {$studentName}\nStudent ID: {$studentId}\nUsername: {$username}\nTemporary password: {$temporaryPassword}";
+        return $mail->send();
+    } catch (Exception $e) {
+        error_log('Student credential email failed: ' . $e->getMessage());
+        return false;
+    }
 }
 
 try {
@@ -205,6 +275,15 @@ if (!filter_var(valueFromPost("email"), FILTER_VALIDATE_EMAIL)) {
 try {
     ensureStudentsTable($pdo);
 
+    $paymentReference = valueFromPost('paymentReference');
+    $paymentEmail = paidPaymentEmail($pdo, $paymentReference);
+    if ($paymentEmail === null) {
+        respond(false, 'A verified application payment is required before registration.', 402);
+    }
+    if (strcasecmp(valueFromPost('guardianEmail'), $paymentEmail) !== 0) {
+        respond(false, 'The guardian email must match the email used for payment.', 422, ['field' => 'guardianEmail']);
+    }
+
     $data = [];
 
     foreach ($fieldMap as $postName => $columnName) {
@@ -228,9 +307,30 @@ try {
     );
 
     $stmt->execute($data);
+    $studentId = (int) $pdo->lastInsertId();
+    $portalUsername = 'EBI' . str_pad((string) $studentId, 6, '0', STR_PAD_LEFT);
+    $temporaryPassword = createTemporaryPassword();
+    $pdo->prepare('UPDATE students SET portal_username = ?, portal_password_hash = ? WHERE id = ?')
+        ->execute([$portalUsername, password_hash($temporaryPassword, PASSWORD_DEFAULT), $studentId]);
 
-    respond(true, "Student registered successfully", 200, [
-        "id" => $pdo->lastInsertId(),
+    $pdo->prepare('UPDATE application_payments SET student_id = ? WHERE reference = ? AND student_id IS NULL')
+        ->execute([$studentId, $paymentReference]);
+
+    $credentialsSent = sendStudentCredentials(
+        $paymentEmail,
+        valueFromPost('guardianName'),
+        trim(valueFromPost('firstName') . ' ' . valueFromPost('surname')),
+        $studentId,
+        $portalUsername,
+        $temporaryPassword,
+    );
+    if ($credentialsSent) {
+        $pdo->prepare('UPDATE students SET credentials_sent_at = NOW() WHERE id = ?')->execute([$studentId]);
+    }
+
+    respond(true, $credentialsSent ? "Student registered successfully. Login details have been emailed to the parent or guardian." : "Student registered successfully, but the login email could not be sent. Please contact the school office.", 200, [
+        "id" => $studentId,
+        "credentialsSent" => $credentialsSent,
     ]);
 } catch (PDOException $e) {
     respond(false, "Registration failed: " . $e->getMessage(), 500);

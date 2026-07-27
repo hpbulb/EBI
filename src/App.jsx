@@ -11,6 +11,7 @@ import Admissions from "./Admissions.jsx";
 import StudentLife from "./StudentLife.jsx";
 import Contact from "./Contact.jsx";
 import Registration from "./Registration.jsx";
+import StudentLoginSignUp from "../Portal/StudendLogin_SignUp.jsx";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/student-life" element={<StudentLife />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/registration" element={<Registration />}/>
+        <Route path="/student-portal" element={<StudentLoginSignUp />}/>
       </Routes>
       <Footer />
     </>
