@@ -16,8 +16,8 @@ import StudentLoginSignUp from "../Portal/StudendLogin_SignUp.jsx";
 function App() {
   return (
     <>
-      <Navbar />
-      <BNavbar />
+      {/* <Navbar />
+      <BNavbar /> */}
 
       <Routes>
         <Route
@@ -36,8 +36,8 @@ function App() {
         <Route path="/admission" element={<Admissions />} />
         <Route path="/student-life" element={<StudentLife />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/registration" element={<Registration />}/>
-        <Route path="/student-portal" element={<StudentLoginSignUp />}/>
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/student-portal" element={<StudentLoginSignUp />} />
       </Routes>
       <Footer />
     </>

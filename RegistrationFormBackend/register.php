@@ -61,6 +61,7 @@ function ensureStudentsTable(PDO $pdo): void
         "blood_group" => "VARCHAR(10) DEFAULT NULL",
         "medical_information" => "TEXT NULL",
         "passport" => "VARCHAR(255) DEFAULT NULL",
+        "birth_certificate" => "VARCHAR(255) DEFAULT NULL",
         "portal_username" => "VARCHAR(50) DEFAULT NULL UNIQUE",
         "portal_password_hash" => "VARCHAR(255) DEFAULT NULL",
         "credentials_sent_at" => "TIMESTAMP NULL DEFAULT NULL",

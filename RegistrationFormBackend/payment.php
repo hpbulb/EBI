@@ -13,7 +13,7 @@
         exit;
     }
 
-    require __DIR__ . '/config.php';
+
 
     function ensurePaymentsTable(PDO $pdo): void {
         $pdo->exec("CREATE TABLE IF NOT EXISTS `application_payments` (
@@ -43,11 +43,12 @@
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') paymentResponse(false, 'Invalid request.', 405);
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
     $action = $input['action'] ?? '';
-    $secret = envValue('PAYSTACK_SECRET_KEY');
-    $feeNaira = (int) envValue('PAYSTACK_APPLICATION_FEE_NGN', '0');
-    if ($secret === '' || str_contains($secret, 'replace_me') || $feeNaira < 1) paymentResponse(false, 'Payment is not configured. Please contact the school.', 503);
 
     try {
+        require __DIR__ . '/config.php';
+        $secret = envValue('PAYSTACK_SECRET_KEY');
+        $feeNaira = (int) envValue('PAYSTACK_APPLICATION_FEE_NGN', '0');
+        if ($secret === '' || str_contains($secret, 'replace_me') || $feeNaira < 1) paymentResponse(false, 'Payment is not configured. Please contact the school.', 503);
         ensurePaymentsTable($pdo);
         if ($action === 'initialize') {
             $email = $_SESSION['applicant_email'] ?? '';

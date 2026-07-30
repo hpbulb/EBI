@@ -5,7 +5,6 @@ header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 session_start();
-require __DIR__ . '/config.php';
 
 function authResponse(bool $success, string $message, int $status = 200, array $extra = []): void {
     http_response_code($status);
@@ -27,6 +26,7 @@ $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $action = $input['action'] ?? '';
 
 try {
+    require __DIR__ . '/config.php';
     ensureApplicantAccounts($pdo);
     if ($action === 'session') {
         if (empty($_SESSION['applicant_email'])) authResponse(true, 'No active session.', 200, ['authenticated' => false]);

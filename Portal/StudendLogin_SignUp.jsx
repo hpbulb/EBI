@@ -122,6 +122,26 @@ function Dashboard({ student, onLogout }) {
             )}
           </form>
         </section>
+        <section className="mt-6 max-w-xl rounded-2xl bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-slate-900">Upload Birth Certificate</h2>
+          <form onSubmit={uploadBirthCertificate} className="mt-4 space-y-4">
+            <input
+              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => setBirthCertificate(e.target.files)}
+              required
+            />
+            <button className="rounded-lg bg-emerald-700 px-4 py-2 font-semibold text-white hover:bg-emerald-800">
+              Upload Birth Certificate
+            </button>
+            {message && (
+              <p role="status" className="text-sm text-slate-700">
+                {message}
+              </p>
+            )}
+          </form>
+        </section>
       </section>
     </main>
   );
@@ -148,7 +168,7 @@ export default function StudentLoginSignUp() {
   useEffect(() => {
     portalRequest({ action: "session" })
       .then(({ student: profile }) => setStudent(profile))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
   async function login(event) {
@@ -184,7 +204,7 @@ export default function StudentLoginSignUp() {
             and sent to your parent or guardian. <br /> "Note that this logins are
             temporal and you can't use to login to the Eden Bulb International
             School's main student portal "
-            </p>
+          </p>
         </header>
         <form onSubmit={login} className="space-y-5 p-7">
           <div>
