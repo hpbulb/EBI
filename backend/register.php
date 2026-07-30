@@ -58,6 +58,8 @@ function ensureStudentsTable(PDO $pdo): void
         "blood_group" => "VARCHAR(10) DEFAULT NULL",
         "medical_information" => "TEXT NULL",
         "passport" => "VARCHAR(255) DEFAULT NULL",
+        "review_status" => "VARCHAR(20) NOT NULL DEFAULT 'pending'",
+        "review_note" => "TEXT DEFAULT NULL",
         "created_at" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
     ];
 
@@ -213,6 +215,8 @@ try {
     }
 
     $data["passport"] = handlePassportUpload();
+    $data["review_status"] = "pending";
+    $data["review_note"] = null;
 
     $columns = array_keys($data);
     $placeholders = array_map(function ($column) {

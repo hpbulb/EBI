@@ -11,6 +11,7 @@ import Admissions from "./Admissions.jsx";
 import StudentLife from "./StudentLife.jsx";
 import Contact from "./Contact.jsx";
 import Registration from "./Registration.jsx";
+import RegistrationAdminDashboard from "./RegistrationAdminDashboard.jsx";
 
 function App() {
   return (
@@ -35,7 +36,8 @@ function App() {
         <Route path="/admission" element={<Admissions />} />
         <Route path="/student-life" element={<StudentLife />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/registration" element={<Registration />}/>
+        <Route path="/registration" element={<Registration />} />
+        <Route path="/admin/dashboard" element={<RegistrationAdminDashboard />} />
       </Routes>
       <Footer />
     </>

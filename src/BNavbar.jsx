@@ -31,6 +31,7 @@ function BNavbar() {
                     <li><Link to="/student-life">Student Life</Link></li>
                     <li><Link to="/news-events">News & Events</Link></li>
                     <li><Link to="/contact">Contact Us</Link></li>
+                    <li><Link to="/admin/dashboard" className="font-semibold text-amber-700">Admin Dashboard</Link></li>
                 </ul>
 
                 {/* Mobile Button */}
@@ -53,6 +54,7 @@ function BNavbar() {
                         <li><a href="/student-life">Student Life</a></li>
                         <li><a href="/news-events">News & Events</a></li>
                         <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/admin/dashboard" className="font-semibold text-amber-700">Admin Dashboard</a></li>
                     </ul>
                 </div>
             )}
