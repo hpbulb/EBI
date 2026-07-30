@@ -12,7 +12,16 @@ export default function Payment({ onVerified }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [paid, setPaid] = useState(false);
-  const endpoint = `${import.meta.env.BASE_URL}backend/payment.php`;
+const endpoint = `${import.meta.env.BASE_URL}backend/payment.php`;
+
+async function parsePaymentResponse(response) {
+  const body = await response.text();
+  try {
+    return JSON.parse(body);
+  } catch {
+    throw new Error("The payment server returned an invalid response.");
+  }
+}
 
   useEffect(() => {
     const reference = new URLSearchParams(window.location.search).get("reference");
@@ -27,7 +36,7 @@ export default function Payment({ onVerified }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "verify", reference }),
         });
-        const data = await response.json();
+        const data = await parsePaymentResponse(response);
         if (!data.success) throw new Error(data.message);
 
         setPaid(true);
@@ -55,7 +64,7 @@ export default function Payment({ onVerified }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "lookup", email }),
       });
-      const lookup = await lookupResponse.json();
+      const lookup = await parsePaymentResponse(lookupResponse);
       if (!lookup.success) throw new Error(lookup.message);
       if (lookup.paid) {
         setPaid(true);
@@ -69,7 +78,7 @@ export default function Payment({ onVerified }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "initialize", email }),
       });
-      const data = await response.json();
+      const data = await parsePaymentResponse(response);
       if (!data.success) throw new Error(data.message);
 
       // Paystack's hosted checkout is used so card details never touch this site.
