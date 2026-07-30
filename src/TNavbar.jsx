@@ -17,7 +17,7 @@ function Navbar() {
                     </div>
                     <div>
                         <ul className="flex gap-3 item-center">
-                        <li className="text-blue-900 bg-white p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold inline-flex sm:hidden items-center gap-1 text-sm"><Link to="/student-portal" className="inline-flex items-center gap-2"><FontAwesomeIcon icon={faUser} className="text-blue text-md" />Student Portal</Link></li>
+                        <li className="text-blue-900 bg-white p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold md:inline-flex hidden items-center gap-1 text-sm"><Link to="/student-portal" className="inline-flex items-center gap-2"><FontAwesomeIcon icon={faUser} className="text-blue text-md" />Student Portal</Link></li>
                         <li className="text-blue-900 bg-white p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold inline-flex items-center gap-1 text-sm"> <FontAwesomeIcon icon={faFile} className="text-blue-900 text-md" /><Link to="/registration">Apply Now</Link></li>
                     </ul>
                     </div>
