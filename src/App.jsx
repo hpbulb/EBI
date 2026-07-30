@@ -1,6 +1,6 @@
 import Navbar from "./TNavbar.jsx";
 import BNavbar from "./BNavbar.jsx";
-import Hero from "./Hero.jsx";
+import Hero from "./Componets/Hero.jsx";
 import Content from "./Content.jsx";
 import Footer from "./Footer.jsx";
 import { Routes, Route } from "react-router-dom";
