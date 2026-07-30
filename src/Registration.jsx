@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "./modal.jsx";
 
 const inputClass =
@@ -53,6 +53,142 @@ function Registration() {
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [paymentEmail, setPaymentEmail] = useState("");
+  const [paymentReference, setPaymentReference] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
+  const [accountEmail, setAccountEmail] = useState("");
+  const [authMode, setAuthMode] = useState("login");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authMessage, setAuthMessage] = useState("");
+
+  const paymentEndpoint = `${import.meta.env.BASE_URL}backend/payment.php`;
+  const authEndpoint = `${import.meta.env.BASE_URL}backend/auth.php`;
+
+  useEffect(() => {
+    fetch(authEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "session" }) })
+      .then((response) => response.json())
+      .then((data) => { if (data.authenticated) setAccountEmail(data.email); })
+      .catch(() => setAuthMessage("We could not check your account session."))
+      .finally(() => setAuthLoading(false));
+  }, [authEndpoint]);
+
+  const grantPaymentAccess = useCallback((payment) => {
+    const draftKey = `ebi-registration-draft-${payment.reference}`;
+    let savedDraft = {};
+    try {
+      savedDraft = JSON.parse(window.localStorage.getItem(draftKey) || "{}");
+    } catch {
+      window.localStorage.removeItem(draftKey);
+    }
+    setPaymentReference(payment.reference);
+    setPaymentEmail(payment.email);
+    setFormData({ ...initialFormData, ...savedDraft, guardianEmail: payment.email });
+  }, []);
+
+  useEffect(() => {
+    if (!paymentReference) return;
+    window.localStorage.setItem(
+      `ebi-registration-draft-${paymentReference}`,
+      JSON.stringify(formData),
+    );
+  }, [formData, paymentReference]);
+
+  useEffect(() => {
+    const reference = new URLSearchParams(window.location.search).get("reference");
+    if (!reference) return;
+
+    const verifyPayment = async () => {
+      setPaymentLoading(true);
+      setPaymentMessage("Verifying your Paystack payment…");
+      try {
+        const response = await fetch(paymentEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "verify", reference }),
+        });
+        const data = await response.json();
+        if (!data.success) throw new Error(data.message);
+        grantPaymentAccess(data);
+        setPaymentMessage("Payment confirmed. You can now complete the registration form.");
+        window.history.replaceState({}, "", window.location.pathname);
+      } catch (error) {
+        setPaymentMessage(error.message || "We could not verify that payment.");
+      } finally {
+        setPaymentLoading(false);
+      }
+    };
+    verifyPayment();
+  }, [grantPaymentAccess, paymentEndpoint]);
+
+  const submitAccount = async (event) => {
+    event.preventDefault();
+    setAuthLoading(true);
+    setAuthMessage("");
+    try {
+      const response = await fetch(authEndpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: authMode, email: paymentEmail, password: authPassword }) });
+      const body = await response.text();
+      let data;
+      try {
+        data = JSON.parse(body);
+      } catch {
+        throw new Error("The server returned an invalid response. Please contact the school office before submitting again.");
+      }
+      if (!data.success) throw new Error(data.message);
+      setAccountEmail(data.email);
+      setPaymentEmail(data.email);
+      setAuthPassword("");
+    } catch (error) {
+      setAuthMessage(error.message || "We could not access your account.");
+    } finally { setAuthLoading(false); }
+  };
+
+  const signOutAccount = async () => {
+    try {
+      await fetch(authEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "logout" }),
+      });
+    } finally {
+      setAccountEmail("");
+      setPaymentEmail("");
+      setPaymentMessage("");
+    }
+  };
+
+  const startPayment = async (event) => {
+    event.preventDefault();
+    setPaymentLoading(true);
+    setPaymentMessage("");
+    try {
+      const lookupResponse = await fetch(paymentEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "lookup" }),
+      });
+      const lookup = await lookupResponse.json();
+      if (!lookup.success) throw new Error(lookup.message);
+      if (lookup.paid) {
+        grantPaymentAccess(lookup);
+        setPaymentMessage("Your completed payment was found. Your saved registration has been restored.");
+        return;
+      }
+
+      const response = await fetch(paymentEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "initialize" }),
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message);
+      window.location.assign(data.authorization_url);
+    } catch (error) {
+      setPaymentMessage(error.message || "We could not start the payment.");
+      setPaymentLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -84,6 +220,7 @@ function Registration() {
       if (passportFile) {
         form.append("passport", passportFile);
       }
+      form.append("paymentReference", paymentReference);
 
       const response = await fetch(
         `${import.meta.env.BASE_URL}backend/register.php`,
@@ -93,20 +230,27 @@ function Registration() {
         },
       );
 
-      const data = await response.json();
+      const body = await response.text();
+      let data;
+      try {
+        data = JSON.parse(body);
+      } catch {
+        throw new Error("The server returned an invalid response. Please contact the school office before submitting again.");
+      }
 
       if (data.success) {
         setSuccessMessage(data.message || "Registration successful!");
         setShowSuccessModal(true);
         setFormData(initialFormData);
         setPassportFile(null);
+        window.localStorage.removeItem(`ebi-registration-draft-${paymentReference}`);
         // prompt(data.message || 'Registration successful!')
       } else {
         alert(data.message || "Registration failed.");
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong submitting the form.");
+      alert(error.message || "Something went wrong submitting the form.");
     } finally {
       setLoading(false);
     }
@@ -114,6 +258,44 @@ function Registration() {
 
   return (
     <main className="min-h-screen bg-violet-100 px-4 py-10 sm:px-6">
+      {!accountEmail ? (
+        <section className="mx-auto max-w-xl overflow-hidden rounded-3xl bg-white shadow-xl">
+          <header className="bg-amber-800 px-6 py-8 text-white sm:px-10">
+            <p className="text-sm font-semibold uppercase tracking-widest text-amber-200">Admissions</p>
+            <h1 className="mt-2 text-3xl font-bold">{authMode === "login" ? "Sign in" : "Create an account"}</h1>
+            <p className="mt-2 text-amber-50">Sign in or create an account before making your application payment.</p>
+          </header>
+          <form onSubmit={submitAccount} className="space-y-5 p-6 sm:p-10">
+            <div><label htmlFor="accountEmail" className="text-sm font-semibold text-slate-700">Parent or guardian email</label><input id="accountEmail" type="email" autoComplete="email" required value={paymentEmail} onChange={(event) => setPaymentEmail(event.target.value)} className={inputClass} /></div>
+            <div><label htmlFor="accountPassword" className="text-sm font-semibold text-slate-700">Password</label><input id="accountPassword" type="password" autoComplete={authMode === "login" ? "current-password" : "new-password"} minLength="8" required value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} className={inputClass} /></div>
+            {authMessage && <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{authMessage}</p>}
+            <button type="submit" disabled={authLoading} className="w-full rounded-lg bg-amber-700 px-7 py-3 font-bold text-white transition hover:bg-amber-800 disabled:opacity-50">{authLoading ? "Please wait…" : authMode === "login" ? "Sign in and continue" : "Create account and continue"}</button>
+            <button type="button" onClick={() => { setAuthMode(authMode === "login" ? "signup" : "login"); setAuthMessage(""); }} className="w-full text-sm font-semibold text-amber-800 hover:text-amber-950">{authMode === "login" ? "New here? Create an account" : "Already have an account? Sign in"}</button>
+          </form>
+        </section>
+      ) : !paymentReference ? (
+        <section className="mx-auto max-w-xl overflow-hidden rounded-3xl bg-white shadow-xl">
+          <header className="bg-amber-800 px-6 py-8 text-white sm:px-10">
+            <p className="text-sm font-semibold uppercase tracking-widest text-amber-200">Admissions</p>
+            <h1 className="mt-2 text-3xl font-bold">Application payment</h1>
+            <p className="mt-2 text-amber-50">Pay the application fee before accessing the student registration form.</p>
+          </header>
+          <form onSubmit={startPayment} className="space-y-5 p-6 sm:p-10">
+            <div>
+              <label htmlFor="paymentEmail" className="text-sm font-semibold text-slate-700">Parent or guardian email</label>
+              <input id="paymentEmail" type="email" autoComplete="email" readOnly value={accountEmail} className={`${inputClass} cursor-not-allowed bg-slate-100`} />
+              <p className="mt-2 text-sm text-slate-500">Your Paystack receipt will be sent to your signed-in account email.</p>
+            </div>
+            {paymentMessage && <p role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">{paymentMessage}</p>}
+            <button type="submit" disabled={paymentLoading} className="w-full rounded-lg bg-amber-700 px-7 py-3 font-bold text-white transition hover:bg-amber-800 disabled:opacity-50">
+              {paymentLoading ? "Please wait…" : "Pay application fee"}
+            </button>
+            <button type="button" onClick={signOutAccount} className="w-full text-sm font-semibold text-amber-800 hover:text-amber-950">
+              Sign out or use another account
+            </button>
+          </form>
+        </section>
+      ) : (
       <form
         onSubmit={submit}
         className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-white shadow-xl"
@@ -499,15 +681,18 @@ function Registration() {
                 />
               </Field>
 
-              <Field label="Parent / guardian email" name="guardianEmail">
+              <Field label="Parent / guardian email" name="guardianEmail" required>
                 <input
                   id="guardianEmail"
                   name="guardianEmail"
                   type="email"
                   value={formData.guardianEmail}
-                  onChange={handleChange}
+                  readOnly
+                  required
+                  title="This email is linked to the verified application payment."
                   className={inputClass}
                 />
+                <p className="mt-1 text-xs text-slate-500">Linked to the email used for the verified application payment.</p>
               </Field>
 
               <Field
@@ -616,6 +801,7 @@ function Registration() {
           </div>
         </div>
       </form>
+      )}
 
       <Modal
         isOpen={showSuccessModal}
