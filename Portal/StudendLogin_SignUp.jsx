@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
 
-const endpoint = `${import.meta.env.BASE_URL}backend/student_portal.php`;
+const endpoint = `${import.meta.env.BASE_URL ?? "/"}backend/student_portal.php`;
+
+async function parsePortalResponse(response) {
+  const body = await response.text();
+  try {
+    return JSON.parse(body);
+  } catch {
+    throw new Error("The student portal server returned an invalid response.");
+  }
+}
 
 async function portalRequest(payload) {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
+  const data = await parsePortalResponse(response);
   if (!data.success) throw new Error(data.message);
   return data;
 }
@@ -16,9 +26,10 @@ async function portalRequest(payload) {
 async function portalUpload(formData) {
   const response = await fetch(endpoint, {
     method: "POST",
+    credentials: "include",
     body: formData,
   });
-  const data = await response.json();
+  const data = await parsePortalResponse(response);
   if (!data.success) throw new Error(data.message);
   return data;
 }
@@ -233,9 +244,7 @@ function DocumentsTab({ student, onStudentUpdate }) {
               </svg>
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">
-                Passport photograph
-              </h3>
+              <h3 className="font-bold text-slate-900">Passport photograph</h3>
               <p className="text-xs text-slate-500">
                 JPG, PNG, WEBP, or GIF · Max 5 MB
               </p>
@@ -405,34 +414,6 @@ function EditProfileTab({ student, onStudentUpdate }) {
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    setForm({
-      firstName: student.first_name || "",
-      middleName: student.middle_name || "",
-      surname: student.surname || "",
-      dob: student.dob || "",
-      gender: student.gender || "",
-      nationality: student.nationality || "",
-      stateOfOrigin: student.state_of_origin || "",
-      lga: student.lga || "",
-      city: student.city || "",
-      religion: student.religion || "",
-      email: student.email || "",
-      phone: student.phone || "",
-      address: student.address || "",
-      previousSchool: student.previous_school || "",
-      lastClass: student.last_class || "",
-      bloodGroup: student.blood_group || "",
-      medicalInformation: student.medical_information || "",
-      guardianName: student.guardian_name || "",
-      relationship: student.relationship || "",
-      guardianPhone: student.guardian_phone || "",
-      guardianEmail: student.guardian_email || "",
-      emergencyName: student.emergency_name || "",
-      emergencyPhone: student.emergency_phone || "",
-    });
-  }, [student]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -891,13 +872,17 @@ export default function StudentLoginSignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   useEffect(() => {
     portalRequest({ action: "session" })
-      .then(({ student: profile }) => setStudent(profile))
+      .then(({ student: profile }) => {
+        setStudent(profile);
+      })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setCheckingSession(false);
+      });
   }, []);
 
   async function login(event) {
@@ -915,10 +900,23 @@ export default function StudentLoginSignUp() {
   }
 
   async function logout() {
-    await portalRequest({ action: "logout" });
-    setStudent(null);
-    setUsername("");
-    setPassword("");
+    try {
+      await portalRequest({ action: "logout" });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setStudent(null);
+      setUsername("");
+      setPassword("");
+    }
+  }
+
+  if (checkingSession) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
+        <p className="text-sm font-medium text-slate-600">Loading student portal…</p>
+      </main>
+    );
   }
 
   if (student) return <Dashboard student={student} onLogout={logout} />;
@@ -933,9 +931,11 @@ export default function StudentLoginSignUp() {
           <h1 className="mt-2 text-3xl font-bold">Student Portal</h1>
           <p className="mt-2 text-sm text-emerald-50">
             Your login details are created automatically after paid registration
-            and sent to your parent or guardian. <br /> "Note that this logins are
-            temporal and you can't use to login to the Eden Bulb International
-            School's main student portal "
+            and sent to your parent or guardian.
+            <span className="text-red-600">
+              Note that these login credentials are temporary and cannot be used
+              to access the main Eden Bulb International School student portal.
+            </span>
           </p>
         </header>
         <form onSubmit={login} className="space-y-5 p-7">

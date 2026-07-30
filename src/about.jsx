@@ -1,5 +1,9 @@
+import BNavbar from "./BNavbar";
+
 function About() {
   return (
+<>
+<BNavbar/>
     <main>
       <section className="relative isolate overflow-hidden bg-linear-to-br from-slate-950 via-blue-950 to-emerald-950 px-6 py-20 text-white sm:px-10 lg:px-16 lg:py-28">
         <div className="absolute -left-24 top-10 -z-10 h-72 w-72 rounded-ful blur-3xl" />
@@ -143,6 +147,7 @@ function About() {
       </section>
 
     </main>
+</>
   );
 }
 

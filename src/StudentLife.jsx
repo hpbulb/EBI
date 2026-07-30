@@ -1,7 +1,84 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFutbol, faMusic, faPeopleGroup, faTrophy } from "@fortawesome/free-solid-svg-icons";
-import { PageHero } from "./Academics.jsx";
 
-const activities = [[faFutbol, "Sports & wellbeing", "Building healthy habits, teamwork, and resilience through active play."], [faMusic, "Arts & creativity", "Giving learners a platform to express ideas through music, performance, and art."], [faPeopleGroup, "Clubs & leadership", "Helping students discover interests, serve others, and lead with confidence."], [faTrophy, "Celebrating achievement", "Recognising effort and growth in the classroom, on the field, and beyond."]];
-function StudentLife() { return <main className="bg-slate-50"><PageHero eyebrow="Beyond the classroom" title="Student Life" text="A vibrant school experience that helps every learner belong, contribute, and grow into their best self."/><section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-16"><div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">{activities.map(([icon,title,text]) => <article key={title} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"><FontAwesomeIcon icon={icon} className="text-3xl text-emerald-700"/><h2 className="mt-5 text-xl font-bold text-slate-900">{title}</h2><p className="mt-3 text-sm leading-6 text-slate-600">{text}</p></article>)}</div><div className="mt-12 grid items-center gap-8 rounded-3xl bg-emerald-800 p-8 text-white lg:grid-cols-2"><img className="h-64 w-full rounded-2xl object-cover" src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=900&q=80" alt="Students enjoying time together"/><div><p className="text-sm font-bold tracking-[0.18em] text-amber-300 uppercase">A community that cares</p><h2 className="mt-3 text-3xl font-black">Every child has a place here.</h2><p className="mt-4 leading-8 text-emerald-50">We create opportunities for learners to make friends, take responsibility, and discover the passions that will shape their future.</p></div></div></section></main>; }
+import {
+  faFutbol,
+  faMusic,
+  faPeopleGroup,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
+import { PageHero } from "./Academics.jsx";
+import BNavbar from "./BNavbar.jsx";
+
+const activities = [
+  [
+    faFutbol,
+    "Sports & wellbeing",
+    "Building healthy habits, teamwork, and resilience through active play.",
+  ],
+  [
+    faMusic,
+    "Arts & creativity",
+    "Giving learners a platform to express ideas through music, performance, and art.",
+  ],
+  [
+    faPeopleGroup,
+    "Clubs & leadership",
+    "Helping students discover interests, serve others, and lead with confidence.",
+  ],
+  [
+    faTrophy,
+    "Celebrating achievement",
+    "Recognising effort and growth in the classroom, on the field, and beyond.",
+  ],
+];
+function StudentLife() {
+  return (
+ <>
+ <BNavbar/>
+    <main className="bg-slate-50">
+      <PageHero
+        eyebrow="Beyond the classroom"
+        title="Student Life"
+        text="A vibrant school experience that helps every learner belong, contribute, and grow into their best self."
+      />
+      <section className="mx-auto max-w-7xl px-6 py-16 sm:px-10 lg:px-16">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {activities.map(([icon, title, text]) => (
+            <article
+              key={title}
+              className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200"
+            >
+              <FontAwesomeIcon
+                icon={icon}
+                className="text-3xl text-emerald-700"
+              />
+              <h2 className="mt-5 text-xl font-bold text-slate-900">{title}</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="mt-12 grid items-center gap-8 rounded-3xl bg-emerald-800 p-8 text-white lg:grid-cols-2">
+          <img
+            className="h-64 w-full rounded-2xl object-cover"
+            src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&w=900&q=80"
+            alt="Students enjoying time together"
+          />
+          <div>
+            <p className="text-sm font-bold tracking-[0.18em] text-amber-300 uppercase">
+              A community that cares
+            </p>
+            <h2 className="mt-3 text-3xl font-black">
+              Every child has a place here.
+            </h2>
+            <p className="mt-4 leading-8 text-emerald-50">
+              We create opportunities for learners to make friends, take
+              responsibility, and discover the passions that will shape their
+              future.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main></>
+  );
+}
 export default StudentLife;

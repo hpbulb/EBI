@@ -1,4 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import BNavbar from "./BNavbar.jsx";
+
 import {
   faArrowRight,
   faCalendarDays,
@@ -40,6 +42,8 @@ const events = [
 
 function NewsEvents() {
   return (
+<>
+<BNavbar/>
     <main className="bg-slate-50">
       <section className="relative overflow-hidden bg-linear-to-br from-slate-950 via-blue-950 to-emerald-950 px-6 py-20 text-white sm:px-10 lg:px-16">
         <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-amber-300/10 blur-3xl" />
@@ -102,6 +106,7 @@ function NewsEvents() {
         </div>
       </section>
     </main>
+</>
   );
 }
 
