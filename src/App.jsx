@@ -12,6 +12,8 @@ import StudentLife from "./StudentLife.jsx";
 import Contact from "./Contact.jsx";
 import Registration from "./Registration.jsx";
 import RegistrationAdminDashboard from "./RegistrationAdminDashboard.jsx";
+import AdminLogin from "./AdminLogin.jsx";
+import AdminRegistration from "./AdminRegistration.jsx";
 import StudentLoginSignUp from "../Portal/StudendLogin_SignUp.jsx";
 
 function App() {
@@ -37,7 +39,12 @@ function App() {
         <Route path="/student-life" element={<StudentLife />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/registration" element={<Registration />} />
-        <Route path="/admin/dashboard" element={<RegistrationAdminDashboard />} />
+        <Route path="/admin/register" element={<AdminRegistration />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route
+          path="/admin/dashboard"
+          element={<RegistrationAdminDashboard />}
+        />
         <Route path="/student-portal" element={<StudentLoginSignUp />} />
       </Routes>
       <Footer />
