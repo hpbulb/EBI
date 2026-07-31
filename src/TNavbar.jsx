@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faMailBulk } from "@fortawesome/free-solid-svg-icons";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
@@ -18,6 +18,7 @@ function Navbar() {
                     <div>
                         <ul className="flex gap-3 item-center">
                         <li className="text-blue-900 bg-white p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold md:inline-flex hidden items-center gap-1 text-sm"><Link to="/student-portal" className="inline-flex items-center gap-2"><FontAwesomeIcon icon={faUser} className="text-blue text-md" />Student Portal</Link></li>
+                        <li className="text-white bg-amber-600 p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold inline-flex items-center gap-1 text-sm"><Link to="/admin/register" className="inline-flex items-center gap-2"><FontAwesomeIcon icon={faUserShield} className="text-md" />Admin Registration</Link></li>
                         <li className="text-blue-900 bg-white p-2 rounded-full hover:-translate-x-0.5 transition duration-300 font-semibold inline-flex items-center gap-1 text-sm"> <FontAwesomeIcon icon={faFile} className="text-blue-900 text-md" /><Link to="/registration">Apply Now</Link></li>
                     </ul>
                     </div>
