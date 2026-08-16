@@ -1,10 +1,12 @@
 
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faCirclePlay } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faCirclePlay, faSchool } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 function Hero() {
+  const schoolPortalUrl = import.meta.env.VITE_SCHOOL_PORTAL_URL || "https://ebi-school-portal.vercel.app";
+
   return (
     <section className="relative isolate overflow-hidden bg-slate-950 text-white">
       <img
@@ -21,6 +23,7 @@ function Hero() {
           <div className="mt-9 flex flex-wrap gap-4">
             <Link to="/registration" className="inline-flex items-center gap-2 rounded-xl bg-amber-400 px-6 py-3.5 font-bold text-slate-950 transition hover:bg-amber-300">Apply for admission <FontAwesomeIcon icon={faArrowRight} /></Link>
             <Link to="/about" className="inline-flex items-center gap-2 rounded-xl border border-white/50 px-6 py-3.5 font-bold transition hover:bg-white/10"><FontAwesomeIcon icon={faCirclePlay} /> Discover EBI</Link>
+            <a href={schoolPortalUrl} className="inline-flex items-center gap-2 rounded-xl border border-amber-300/70 px-6 py-3.5 font-bold text-amber-200 transition hover:bg-amber-300/10"><FontAwesomeIcon icon={faSchool} /> School Portal</a>
           </div>
         </div>
         <div className="justify-self-start rounded-2xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-sm lg:justify-self-end">
