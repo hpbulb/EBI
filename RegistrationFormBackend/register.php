@@ -1,5 +1,4 @@
 <?php
-
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -30,7 +29,7 @@ function quoteColumn(string $name): string
     return "`" . str_replace("`", "``", $name) . "`";
 }
 
-function ensureStudentsTable(TursoConnection $pdo): void
+function ensureStudentsTable(PDO $pdo): void
 {
     $columns = [
         "surname" => "VARCHAR(100) NOT NULL",
@@ -69,7 +68,7 @@ function ensureStudentsTable(TursoConnection $pdo): void
         "created_at" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
     ];
 
-    $definitions = ["`id` INTEGER PRIMARY KEY AUTOINCREMENT"];
+    $definitions = ["`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"];
 
     foreach ($columns as $name => $definition) {
         $definitions[] = quoteColumn($name) . " " . $definition;
@@ -77,11 +76,13 @@ function ensureStudentsTable(TursoConnection $pdo): void
 
     $pdo->exec(
         "CREATE TABLE IF NOT EXISTS `students` (" .
-            implode(", ", $definitions) .
-            ")"
+        implode(", ", $definitions) .
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     );
 
-    $existingColumns = $pdo->columns('students');
+    $existingColumns = $pdo
+        ->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'students'")
+        ->fetchAll(PDO::FETCH_COLUMN);
 
     foreach ($columns as $name => $definition) {
         if (!in_array($name, $existingColumns, true)) {
@@ -95,7 +96,7 @@ function valueFromPost(string $name): string
     return trim((string)($_POST[$name] ?? ""));
 }
 
-function paidPaymentEmail(TursoConnection $pdo, string $reference): ?string
+function paidPaymentEmail(PDO $pdo, string $reference): ?string
 {
     $reference = preg_replace('/[^A-Za-z0-9_-]/', '', $reference);
     $statement = $pdo->prepare("SELECT email FROM application_payments WHERE reference = ? AND status = 'paid' AND student_id IS NULL");
@@ -210,7 +211,7 @@ function sendStudentCredentials(string $recipient, string $parentName, string $s
 
 try {
     require __DIR__ . "/config.php";
-} catch (Throwable $e) {
+} catch (PDOException $e) {
     respond(false, "Database connection failed: " . $e->getMessage(), 500);
 }
 
@@ -310,10 +311,10 @@ try {
 
     $stmt = $pdo->prepare(
         "INSERT INTO `students` (" .
-            implode(", ", array_map("quoteColumn", $columns)) .
-            ") VALUES (" .
-            implode(", ", $placeholders) .
-            ")"
+        implode(", ", array_map("quoteColumn", $columns)) .
+        ") VALUES (" .
+        implode(", ", $placeholders) .
+        ")"
     );
 
     $stmt->execute($data);
@@ -335,13 +336,13 @@ try {
         $temporaryPassword,
     );
     if ($credentialsSent) {
-        $pdo->prepare('UPDATE students SET credentials_sent_at = CURRENT_TIMESTAMP WHERE id = ?')->execute([$studentId]);
+        $pdo->prepare('UPDATE students SET credentials_sent_at = NOW() WHERE id = ?')->execute([$studentId]);
     }
 
     respond(true, $credentialsSent ? "Student registered successfully. Login details have been emailed to the parent or guardian." : "Student registered successfully, but the login email could not be sent. Please contact the school office.", 200, [
         "id" => $studentId,
         "credentialsSent" => $credentialsSent,
     ]);
-} catch (Throwable $e) {
+} catch (PDOException $e) {
     respond(false, "Registration failed: " . $e->getMessage(), 500);
 }

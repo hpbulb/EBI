@@ -23,13 +23,15 @@ function dashboardResponse(bool $success, string $message, int $status = 200, ar
     exit;
 }
 
-function ensureReviewColumns(TursoConnection $pdo): void
+function ensureReviewColumns(PDO $pdo): void
 {
     $columns = [
         'review_status' => "VARCHAR(20) NOT NULL DEFAULT 'pending'",
         'review_note' => 'TEXT DEFAULT NULL',
     ];
-    $existingColumns = $pdo->columns('students');
+    $existingColumns = $pdo->query(
+        "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'students'"
+    )->fetchAll(PDO::FETCH_COLUMN);
 
     foreach ($columns as $name => $definition) {
         if (!in_array($name, $existingColumns, true)) {
@@ -38,21 +40,23 @@ function ensureReviewColumns(TursoConnection $pdo): void
     }
 }
 
-function ensureAdminAccountsTable(TursoConnection $pdo): void
+function ensureAdminAccountsTable(PDO $pdo): void
 {
     $pdo->exec("CREATE TABLE IF NOT EXISTS `admin_accounts` (
-        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         `full_name` VARCHAR(150) NOT NULL,
         `email` VARCHAR(150) NOT NULL UNIQUE,
         `password_hash` VARCHAR(255) NOT NULL,
         `admin_block` VARCHAR(100) NOT NULL,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )");
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
-    $existingColumns = $pdo->columns('admin_accounts');
+    $existingColumns = $pdo
+        ->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'admin_accounts'")
+        ->fetchAll(PDO::FETCH_COLUMN);
 
     if (!in_array('admin_block', $existingColumns, true)) {
-        $pdo->exec("ALTER TABLE `admin_accounts` ADD COLUMN `admin_block` VARCHAR(100) NOT NULL DEFAULT ''");
+        $pdo->exec("ALTER TABLE `admin_accounts` ADD COLUMN `admin_block` VARCHAR(100) NOT NULL AFTER `password_hash`");
     }
 }
 
@@ -182,7 +186,7 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $statement = $pdo->query(
-            "SELECT id, trim(surname || ' ' || first_name || ' ' || COALESCE(middle_name, '')) AS full_name,
+            "SELECT id, CONCAT_WS(' ', surname, first_name, middle_name) AS full_name,
                     email, phone, programme, application_type, session, guardian_name,
                     address, COALESCE(review_status, 'pending') AS review_status,
                     review_note, created_at
@@ -211,7 +215,7 @@ try {
     $update->execute([$status, $note === '' ? null : $note, $id]);
 
     $student = $pdo->prepare(
-        "SELECT id, trim(surname || ' ' || first_name || ' ' || COALESCE(middle_name, '')) AS full_name,
+        "SELECT id, CONCAT_WS(' ', surname, first_name, middle_name) AS full_name,
                 email, phone, programme, application_type, session, guardian_name,
                 address, COALESCE(review_status, 'pending') AS review_status,
                 review_note, created_at
@@ -219,6 +223,6 @@ try {
     );
     $student->execute([$id]);
     dashboardResponse(true, 'Applicant review updated.', 200, ['student' => $student->fetch()]);
-} catch (Throwable $error) {
+} catch (PDOException $error) {
     dashboardResponse(false, 'Dashboard database request failed.', 500);
 }

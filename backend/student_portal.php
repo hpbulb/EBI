@@ -18,9 +18,11 @@
     session_start();
     require __DIR__ . '/config.php';
 
-    function ensureStudentPortalColumns(TursoConnection $pdo): void
+    function ensureStudentPortalColumns(PDO $pdo): void
     {
-        $columns = $pdo->columns('students');
+        $columns = $pdo->query(
+            "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'students'"
+        )->fetchAll(PDO::FETCH_COLUMN);
 
         if (!in_array('birth_certificate', $columns, true)) {
             $pdo->exec('ALTER TABLE students ADD COLUMN birth_certificate VARCHAR(255) DEFAULT NULL');
@@ -36,7 +38,7 @@
         exit;
     }
 
-    function studentProfile(TursoConnection $pdo, int $studentId): ?array
+    function studentProfile(PDO $pdo, int $studentId): ?array
     {
         $statement = $pdo->prepare(
             'SELECT id, portal_username, first_name, middle_name, surname, dob, gender,
@@ -224,6 +226,6 @@
         }
 
         portalResponse(false, 'Unknown portal action.', 400);
-    } catch (Throwable $e) {
+    } catch (PDOException $e) {
         portalResponse(false, 'Student portal is temporarily unavailable.', 500);
     }
