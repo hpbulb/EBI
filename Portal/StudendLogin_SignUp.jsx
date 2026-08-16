@@ -960,7 +960,7 @@ export default function StudentLoginSignUp() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
+              // required
               autoComplete="current-password"
             />
           </div>
