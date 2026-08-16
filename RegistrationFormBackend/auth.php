@@ -2,23 +2,28 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 session_start();
 
-function authResponse(bool $success, string $message, int $status = 200, array $extra = []): void {
+function authResponse(bool $success, string $message, int $status = 200, array $extra = []): void
+{
     http_response_code($status);
     echo json_encode(array_merge(['success' => $success, 'message' => $message], $extra));
     exit;
 }
 
-function ensureApplicantAccounts(PDO $pdo): void {
+function ensureApplicantAccounts(TursoConnection $pdo): void
+{
     $pdo->exec("CREATE TABLE IF NOT EXISTS applicant_accounts (
-        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         email VARCHAR(150) NOT NULL UNIQUE,
         password_hash VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    )");
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') authResponse(false, 'Invalid request.', 405);
@@ -59,6 +64,6 @@ try {
     session_regenerate_id(true);
     $_SESSION['applicant_email'] = $email;
     authResponse(true, $action === 'signup' ? 'Account created.' : 'Signed in.', 200, ['authenticated' => true, 'email' => $email]);
-} catch (PDOException $e) {
+} catch (Throwable $e) {
     authResponse(false, 'Account setup failed: ' . $e->getMessage(), 500);
 }
