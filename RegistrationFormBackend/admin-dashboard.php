@@ -1,19 +1,14 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+require __DIR__ . '/../backend/cors.php';
+configureCors(['GET', 'POST', 'PATCH', 'OPTIONS']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
+configureSessionCookie();
 session_start();
 
 function dashboardResponse(bool $success, string $message, int $status = 200, array $extra = []): void

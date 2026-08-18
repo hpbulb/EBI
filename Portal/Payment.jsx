@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../src/apiBase";
 
 /**
  * Paystack application-fee screen.
@@ -12,7 +13,7 @@ export default function Payment({ onVerified }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [paid, setPaid] = useState(false);
-const endpoint = `${import.meta.env.BASE_URL}backend/payment.php`;
+const endpoint = apiUrl("backend/payment.php");
 
 async function parsePaymentResponse(response) {
   const body = await response.text();

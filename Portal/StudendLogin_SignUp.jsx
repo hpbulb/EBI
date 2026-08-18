@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { apiUrl } from "../src/apiBase";
 
-const endpoint = `${import.meta.env.BASE_URL ?? "/"}backend/student_portal.php`;
+const endpoint = apiUrl("backend/student_portal.php");
 
 async function parsePortalResponse(response) {
   const body = await response.text();

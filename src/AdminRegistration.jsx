@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { apiUrl } from "./apiBase";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
-const endpoint = `${import.meta.env.BASE_URL}backend/admin-dashboard.php`;
+const endpoint = apiUrl("backend/admin-dashboard.php");
 
 const adminBlocks = [
   "Admissions",

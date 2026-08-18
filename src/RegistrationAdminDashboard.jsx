@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { apiUrl } from "./apiBase";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const statuses = ["pending", "approved", "rejected"];
@@ -37,7 +38,7 @@ export default function RegistrationAdminDashboard() {
   const [adminBlock, setAdminBlock] = useState("");
   const [adminName, setAdminName] = useState("");
   const navigate = useNavigate();
-  const endpoint = `${import.meta.env.BASE_URL}backend/admin-dashboard.php`;
+  const endpoint = apiUrl("backend/admin-dashboard.php");
 
   useEffect(() => {
     let active = true;

@@ -1,12 +1,13 @@
 <?php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+require __DIR__ . '/../backend/cors.php';
+configureCors(['POST', 'OPTIONS']);
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
 }
 
+configureSessionCookie();
 session_start();
 
 function authResponse(bool $success, string $message, int $status = 200, array $extra = []): void

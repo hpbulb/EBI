@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { apiUrl } from "./apiBase";
 import Modal from "./modal.jsx";
 
 const inputClass =
@@ -74,9 +75,9 @@ function Registration() {
   const [authLoading, setAuthLoading] = useState(true);
   const [authMessage, setAuthMessage] = useState("");
 
-  const paymentEndpoint = `${import.meta.env.BASE_URL}backend/payment.php`;
-  const authEndpoint = `${import.meta.env.BASE_URL}backend/auth.php`;
-  const registrationEndpoint = `${import.meta.env.BASE_URL}backend/register.php`;
+  const paymentEndpoint = apiUrl("backend/payment.php");
+  const authEndpoint = apiUrl("backend/auth.php");
+  const registrationEndpoint = apiUrl("backend/register.php");
 
   useEffect(() => {
     fetch(authEndpoint, {
