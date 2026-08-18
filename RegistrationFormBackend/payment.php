@@ -22,12 +22,12 @@
     function ensurePaymentsTable(TursoConnection $pdo): void
     {
         $pdo->exec("CREATE TABLE IF NOT EXISTS `application_payments` (
-            `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+            `id` INTEGER PRIMARY KEY AUTOINCREMENT,
             `reference` VARCHAR(100) NOT NULL UNIQUE,
             `email` VARCHAR(150) NOT NULL,
-            `amount` INT UNSIGNED NOT NULL,
+            `amount` INTEGER NOT NULL,
             `status` VARCHAR(30) NOT NULL DEFAULT 'initialized',
-            `student_id` INT UNSIGNED DEFAULT NULL,
+            `student_id` INTEGER DEFAULT NULL,
             `paid_at` TIMESTAMP NULL DEFAULT NULL,
             `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )");
