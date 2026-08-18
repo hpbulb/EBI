@@ -173,6 +173,9 @@ function sendStudentCredentials(string $recipient, string $parentName, string $s
         $mail->Password = $smtpPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = (int) envValue('SMTP_PORT', '587');
+        // Do not let an unreachable SMTP server turn a completed registration
+        // into a PHP timeout and an invalid API response.
+        $mail->Timeout = (int) envValue('SMTP_TIMEOUT_SECONDS', '10');
         $mail->CharSet = 'UTF-8';
         $mail->setFrom($from, envValue('SCHOOL_FROM_NAME', 'EBI School'));
         $mail->addAddress($recipient, $parentName);
