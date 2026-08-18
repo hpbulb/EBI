@@ -83,6 +83,7 @@ function Registration() {
     fetch(authEndpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ action: "session" }),
     })
       .then(parseApiResponse)
@@ -131,6 +132,7 @@ function Registration() {
         const response = await fetch(paymentEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ action: "verify", reference }),
         });
         const data = await parseApiResponse(response);
@@ -157,6 +159,7 @@ function Registration() {
       const response = await fetch(authEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           action: authMode,
           email: paymentEmail,
@@ -188,6 +191,7 @@ function Registration() {
       await fetch(authEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ action: "logout" }),
       });
     } finally {
@@ -205,6 +209,7 @@ function Registration() {
       const lookupResponse = await fetch(paymentEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ action: "lookup" }),
       });
       const lookup = await parseApiResponse(lookupResponse);
@@ -220,6 +225,7 @@ function Registration() {
       const response = await fetch(paymentEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ action: "initialize" }),
       });
       const data = await parseApiResponse(response);
