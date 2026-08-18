@@ -22,7 +22,7 @@
     function ensurePaymentsTable(TursoConnection $pdo): void
     {
         $pdo->exec("CREATE TABLE IF NOT EXISTS `application_payments` (
-            `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+            `id` INTEGER PRIMARY KEY,
             `reference` VARCHAR(100) NOT NULL UNIQUE,
             `email` VARCHAR(150) NOT NULL,
             `amount` INTEGER NOT NULL,
