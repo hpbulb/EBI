@@ -60,8 +60,14 @@ try {
         'student' => ['id' => (int)$student['id'], 'username' => $username],
     ]);
 } catch (Throwable $e) {
-    // Keep implementation details out of the API response, but retain the
-    // exception in Railway's runtime logs for diagnosis.
-    error_log(sprintf('Student login API error: %s in %s:%d', $e->getMessage(), $e->getFile(), $e->getLine()));
-    loginApiResponse(false, 'Student login service is temporarily unavailable.', 500);
+    http_response_code(500);
+
+    echo json_encode([
+        'success' => false,
+        'error' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine()
+    ]);
+
+    exit;
 }
