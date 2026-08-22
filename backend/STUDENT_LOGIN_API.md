@@ -1,6 +1,14 @@
 # Student login API
 
-`POST /EBI/backend/student_login.php` authenticates a student for a mobile app or any web client that uses bearer tokens.
+`POST /backend/student_login.php` authenticates a student for a mobile app or any web client that uses bearer tokens.
+
+On the Railway deployment, use:
+
+```text
+https://ebi-production-16d.up.railway.app/backend/student_login.php
+```
+
+Do not use `/RegistrationFormBackend/student_login.php`: no login endpoint is deployed in that directory.
 
 For a browser client hosted on another domain, add its exact origin to the comma-separated `ALLOWED_ORIGINS` value in `.env` (for example, `ALLOWED_ORIGINS=https://portal.example.com`). Native mobile clients do not use browser CORS.
 
@@ -26,7 +34,7 @@ Successful response (`200`):
 Use the token when calling the existing protected student portal endpoints:
 
 ```http
-POST /EBI/backend/student_portal.php
+POST /backend/student_portal.php
 Authorization: Bearer <access_token>
 Content-Type: application/json
 
