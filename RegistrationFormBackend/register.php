@@ -171,7 +171,12 @@ function sendStudentCredentials(string $recipient, string $parentName, string $s
         $mail->SMTPAuth = true;
         $mail->Username = $smtpUsername;
         $mail->Password = $smtpPassword;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $encryption = strtolower(envValue('SMTP_ENCRYPTION', 'starttls'));
+        $mail->SMTPSecure = match ($encryption) {
+            'ssl', 'smtps' => PHPMailer::ENCRYPTION_SMTPS,
+            'none' => false,
+            default => PHPMailer::ENCRYPTION_STARTTLS,
+        };
         $mail->Port = (int) envValue('SMTP_PORT', '587');
         // Do not let an unreachable SMTP server turn a completed registration
         // into a PHP timeout and an invalid API response.

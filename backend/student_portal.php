@@ -22,6 +22,20 @@
 
     ensureStudentPortalColumns($pdo);
 
+    /** Stores only hashes of API tokens, so a database leak cannot expose active tokens. */
+    function ensureStudentApiTokens(TursoConnection $pdo): void
+    {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS student_api_tokens (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            token_hash VARCHAR(64) NOT NULL UNIQUE,
+            expires_at TIMESTAMP NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
+    }
+
+    ensureStudentApiTokens($pdo);
+
     function portalResponse(bool $success, string $message, int $status = 200, array $extra = []): void
     {
         http_response_code($status);
@@ -44,6 +58,21 @@
         );
         $statement->execute([$studentId]);
         return $statement->fetch() ?: null;
+    }
+
+    function authenticatedStudentId(TursoConnection $pdo): int
+    {
+        $authorization = trim((string)($_SERVER['HTTP_AUTHORIZATION'] ?? ''));
+        if (preg_match('/^Bearer\\s+([a-f0-9]{64})$/i', $authorization, $matches)) {
+            $statement = $pdo->prepare(
+                'SELECT student_id FROM student_api_tokens WHERE token_hash = ? AND expires_at > CURRENT_TIMESTAMP'
+            );
+            $statement->execute([hash('sha256', $matches[1])]);
+            $studentId = (int)$statement->fetchColumn();
+            if ($studentId > 0) return $studentId;
+        }
+
+        return (int)($_SESSION['student_id'] ?? 0);
     }
 
     /**
@@ -128,7 +157,7 @@
             portalResponse(true, 'Signed out.');
         }
 
-        $studentId = (int)($_SESSION['student_id'] ?? 0);
+        $studentId = authenticatedStudentId($pdo);
         if ($studentId < 1) portalResponse(false, 'Please sign in to access the student portal.', 401);
 
         if ($action === 'session' || $action === 'profile') {

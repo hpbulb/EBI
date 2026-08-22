@@ -15,7 +15,7 @@ function configureCors(array $methods): void
     }
 
     header('Access-Control-Allow-Methods: ' . implode(', ', $methods));
-    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
 }
 
 /** Makes PHP session cookies usable from the configured cross-site frontend. */
