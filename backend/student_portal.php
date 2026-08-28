@@ -1,7 +1,7 @@
     <?php
     header('Content-Type: application/json');
     require __DIR__ . '/cors.php';
-    configureCors(['POST', 'OPTIONS']);
+    configureCors(['GET', 'POST', 'OPTIONS']);
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(204);
         exit;
@@ -76,6 +76,33 @@
     }
 
     /**
+     * Creates a mobile API token.  The plaintext token is returned exactly once;
+     * only its SHA-256 hash is stored in the database.
+     */
+    function createStudentApiToken(TursoConnection $pdo, int $studentId): array
+    {
+        $pdo->prepare('DELETE FROM student_api_tokens WHERE expires_at <= CURRENT_TIMESTAMP')->execute();
+
+        $token = bin2hex(random_bytes(32));
+        $expiresAt = gmdate('Y-m-d H:i:s', time() + (30 * 24 * 60 * 60));
+        $statement = $pdo->prepare(
+            'INSERT INTO student_api_tokens (student_id, token_hash, expires_at) VALUES (?, ?, ?)'
+        );
+        $statement->execute([$studentId, hash('sha256', $token), $expiresAt]);
+
+        return ['token' => $token, 'expires_at' => $expiresAt];
+    }
+
+    function revokeStudentApiToken(TursoConnection $pdo): void
+    {
+        $authorization = trim((string)($_SERVER['HTTP_AUTHORIZATION'] ?? ''));
+        if (!preg_match('/^Bearer\\s+([a-f0-9]{64})$/i', $authorization, $matches)) return;
+
+        $pdo->prepare('DELETE FROM student_api_tokens WHERE token_hash = ?')
+            ->execute([hash('sha256', $matches[1])]);
+    }
+
+    /**
      * Handle a document upload (passport or birth_certificate).
      * Accepts images for both; also accepts PDF for birth certificates.
      */
@@ -124,11 +151,15 @@
         return 'uploads/' . $fileName;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') portalResponse(false, 'Invalid request.', 405);
+    if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'], true)) {
+        portalResponse(false, 'Invalid request.', 405);
+    }
 
     // Support both JSON and multipart form data
     $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (str_contains($contentType, 'multipart/form-data')) {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $input = $_GET;
+    } elseif (str_contains($contentType, 'multipart/form-data')) {
         $input = $_POST;
     } else {
         $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
@@ -148,10 +179,17 @@
             }
             session_regenerate_id(true);
             $_SESSION['student_id'] = (int)$student['id'];
-            portalResponse(true, 'Signed in.', 200, ['student' => studentProfile($pdo, (int)$student['id'])]);
+            $apiToken = createStudentApiToken($pdo, (int)$student['id']);
+            portalResponse(true, 'Signed in.', 200, [
+                'student' => studentProfile($pdo, (int)$student['id']),
+                'token' => $apiToken['token'],
+                'token_type' => 'Bearer',
+                'expires_at' => $apiToken['expires_at'],
+            ]);
         }
 
         if ($action === 'logout') {
+            revokeStudentApiToken($pdo);
             $_SESSION = [];
             session_destroy();
             portalResponse(true, 'Signed out.');
