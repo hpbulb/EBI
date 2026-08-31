@@ -89,57 +89,120 @@ function ensureStudentsTable(TursoConnection $pdo): void
     }
 }
 
-function valueFromPost(string $name): string
+function valueFromInput(string $name, array $input): string
 {
-    return trim((string)($_POST[$name] ?? ""));
+    return trim((string)($input[$name] ?? ""));
 }
 
-function paidPaymentEmail(TursoConnection $pdo, string $reference): ?string
+function parseInput(): array
 {
-    $reference = preg_replace('/[^A-Za-z0-9_-]/', '', $reference);
-    $statement = $pdo->prepare("SELECT email FROM application_payments WHERE reference = ? AND status = 'paid' AND student_id IS NULL");
-    $statement->execute([$reference]);
-    $email = $statement->fetchColumn();
-    return $email === false ? null : (string) $email;
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (str_contains($contentType, 'multipart/form-data')) {
+        return $_POST;
+    }
+
+    $json = file_get_contents('php://input');
+    if ($json !== false && $json !== '') {
+        $decoded = json_decode($json, true);
+        if (is_array($decoded)) return $decoded;
+    }
+
+    return $_POST;
 }
 
-function handlePassportUpload(): string
+function base64Upload(string $fieldName, array $allowedTypes = []): string
 {
-    if (!isset($_FILES["passport"]) || $_FILES["passport"]["error"] === UPLOAD_ERR_NO_FILE) {
+    $input = parseInput();
+    $raw = $input[$fieldName] ?? '';
+    if (!is_string($raw) || trim($raw) === '') {
         return "";
     }
 
-    if ($_FILES["passport"]["error"] !== UPLOAD_ERR_OK) {
-        respond(false, "Passport upload failed. Please try again.", 400);
+    $base64 = trim($raw);
+    if (preg_match('#^data:(image/[^;]+);base64,#i', $base64, $matches)) {
+        $mime = strtolower($matches[1]);
+        $base64 = substr($base64, strpos($base64, ',') + 1);
+    } else {
+        $mime = 'image/jpeg';
     }
 
-    $allowedTypes = [
-        "image/jpeg" => "jpg",
-        "image/png" => "png",
-        "image/webp" => "webp",
-        "image/gif" => "gif",
-    ];
+    $ext = match ($mime) {
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        'image/gif' => 'gif',
+        default => 'jpg',
+    };
 
-    $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($_FILES["passport"]["tmp_name"]);
-
-    if (!isset($allowedTypes[$mimeType])) {
+    if ($allowedTypes !== [] && !in_array($mime, $allowedTypes, true)) {
         respond(false, "Passport must be a JPG, PNG, WEBP, or GIF image.", 400);
     }
 
-    $uploadDir = __DIR__ . DIRECTORY_SEPARATOR . "uploads";
+    $data = base64_decode($base64, true);
+    if ($data === false) {
+        respond(false, "Invalid passport image data.", 400);
+    }
 
+    if (strlen($data) > 5 * 1024 * 1024) {
+        respond(false, "Passport image must not exceed 5 MB.", 400);
+    }
+
+    $uploadDir = __DIR__ . DIRECTORY_SEPARATOR . "uploads";
     if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true)) {
         respond(false, "Could not create upload folder.", 500);
     }
 
-    $fileName = date("YmdHis") . "_" . bin2hex(random_bytes(4)) . "." . $allowedTypes[$mimeType];
+    $fileName = date("YmdHis") . "_" . bin2hex(random_bytes(4)) . "." . $ext;
     $targetFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
-    if (!move_uploaded_file($_FILES["passport"]["tmp_name"], $targetFile)) {
+    if (file_put_contents($targetFile, $data) === false) {
         respond(false, "Could not save passport upload.", 500);
     }
 
     return "uploads/" . $fileName;
+}
+
+function handlePassportUpload(): string
+{
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (str_contains($contentType, 'multipart/form-data')) {
+        if (!isset($_FILES["passport"]) || $_FILES["passport"]["error"] === UPLOAD_ERR_NO_FILE) {
+            return "";
+        }
+
+        if ($_FILES["passport"]["error"] !== UPLOAD_ERR_OK) {
+            respond(false, "Passport upload failed. Please try again.", 400);
+        }
+
+        $allowedTypes = [
+            "image/jpeg" => "jpg",
+            "image/png" => "png",
+            "image/webp" => "webp",
+            "image/gif" => "gif",
+        ];
+
+        $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($_FILES["passport"]["tmp_name"]);
+
+        if (!isset($allowedTypes[$mimeType])) {
+            respond(false, "Passport must be a JPG, PNG, WEBP, or GIF image.", 400);
+        }
+
+        $uploadDir = __DIR__ . DIRECTORY_SEPARATOR . "uploads";
+
+        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0777, true)) {
+            respond(false, "Could not create upload folder.", 500);
+        }
+
+        $fileName = date("YmdHis") . "_" . bin2hex(random_bytes(4)) . "." . $allowedTypes[$mimeType];
+        $targetFile = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
+
+        if (!move_uploaded_file($_FILES["passport"]["tmp_name"], $targetFile)) {
+            respond(false, "Could not save passport upload.", 500);
+        }
+
+        return "uploads/" . $fileName;
+    }
+
+    return base64Upload("passport");
 }
 
 function createTemporaryPassword(): string
@@ -225,13 +288,14 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     respond(false, "Invalid request", 405);
 }
 
+$input = parseInput();
+
 $fieldMap = [
     "surname" => "surname",
     "firstName" => "first_name",
     "middleName" => "middle_name",
     "dateOfBirth" => "dob",
     "gender" => "gender",
-    // "maritalStatus" => "marital_status",
     "nationality" => "nationality",
     "stateOfOrigin" => "state_of_origin",
     "lga" => "lga",
@@ -261,7 +325,6 @@ $requiredFields = [
     "firstName",
     "dateOfBirth",
     "gender",
-    // "maritalStatus",
     "nationality",
     "stateOfOrigin",
     "lga",
@@ -280,31 +343,31 @@ $requiredFields = [
 ];
 
 foreach ($requiredFields as $field) {
-    if (valueFromPost($field) === "") {
+    if (valueFromInput($field, $input) === "") {
         respond(false, "Please fill all required fields.", 400, ["field" => $field]);
     }
 }
 
-if (!filter_var(valueFromPost("email"), FILTER_VALIDATE_EMAIL)) {
+if (!filter_var(valueFromInput("email", $input), FILTER_VALIDATE_EMAIL)) {
     respond(false, "Please enter a valid student email address.", 400, ["field" => "email"]);
 }
 
 try {
     ensureStudentsTable($pdo);
 
-    $paymentReference = valueFromPost('paymentReference');
+    $paymentReference = valueFromInput('paymentReference', $input);
     $paymentEmail = paidPaymentEmail($pdo, $paymentReference);
     if ($paymentEmail === null) {
         respond(false, 'A verified application payment is required before registration.', 402);
     }
-    if (strcasecmp(valueFromPost('guardianEmail'), $paymentEmail) !== 0) {
+    if (strcasecmp(valueFromInput('guardianEmail', $input), $paymentEmail) !== 0) {
         respond(false, 'The guardian email must match the email used for payment.', 422, ['field' => 'guardianEmail']);
     }
 
     $data = [];
 
     foreach ($fieldMap as $postName => $columnName) {
-        $value = valueFromPost($postName);
+        $value = valueFromInput($postName, $input);
         $data[$columnName] = $value === "" ? null : $value;
     }
 
@@ -335,8 +398,8 @@ try {
 
     $credentialsSent = sendStudentCredentials(
         $paymentEmail,
-        valueFromPost('guardianName'),
-        trim(valueFromPost('firstName') . ' ' . valueFromPost('surname')),
+        valueFromInput('guardianName', $input),
+        trim(valueFromInput('firstName', $input) . ' ' . valueFromInput('surname', $input)),
         $studentId,
         $portalUsername,
         $temporaryPassword,
