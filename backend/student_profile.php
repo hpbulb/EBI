@@ -31,7 +31,7 @@ function profilePictureUrl(?string $path): ?string
     $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
     $scheme = $isHttps ? 'https' : 'http';
     $applicationPath = rtrim(dirname(dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/backend/student_profile.php'))), '/\\');
-    return $scheme . '://' . $host . $applicationPath . '/RegistrationFormBackend/' . ltrim($path, '/');
+    return $scheme . '://' . $host . $applicationPath . '/backend/' . ltrim($path, '/');
 }
 
 try {
@@ -56,8 +56,12 @@ try {
     }
 
     $studentStatement = $pdo->prepare(
-        'SELECT id, portal_username, first_name, middle_name, surname, email, phone,
-                programme, last_class, address, guardian_name, guardian_phone, passport
+        'SELECT id, portal_username, first_name, middle_name, surname, dob, gender,
+                nationality, state_of_origin, lga, city, religion,
+                application_type, programme, session, previous_school, last_class, start_date,
+                email, phone, address, guardian_name, relationship, guardian_phone, guardian_email,
+                emergency_name, emergency_phone, blood_group, medical_information,
+                passport, birth_certificate, created_at
          FROM students WHERE id = ?'
     );
     $studentStatement->execute([$studentId]);
@@ -80,6 +84,38 @@ try {
             'guardian_name' => $student['guardian_name'],
             'guardian_phone' => $student['guardian_phone'],
             'profile_picture' => profilePictureUrl($student['passport']),
+        ],
+        'registration' => [
+            'date_of_birth' => $student['dob'],
+            'gender' => $student['gender'],
+            'nationality' => $student['nationality'],
+            'state_of_origin' => $student['state_of_origin'],
+            'lga' => $student['lga'],
+            'city' => $student['city'],
+            'religion' => $student['religion'],
+            'application_type' => $student['application_type'],
+            'programme' => $student['programme'],
+            'session' => $student['session'],
+            'previous_school' => $student['previous_school'],
+            'last_class' => $student['last_class'],
+            'start_date' => $student['start_date'],
+            'guardian' => [
+                'name' => $student['guardian_name'],
+                'relationship' => $student['relationship'],
+                'phone' => $student['guardian_phone'],
+                'email' => $student['guardian_email'],
+            ],
+            'emergency_contact' => [
+                'name' => $student['emergency_name'],
+                'phone' => $student['emergency_phone'],
+            ],
+            'medical' => [
+                'blood_group' => $student['blood_group'],
+                'information' => $student['medical_information'],
+            ],
+            'passport_url' => profilePictureUrl($student['passport']),
+            'birth_certificate_url' => profilePictureUrl($student['birth_certificate']),
+            'registered_at' => $student['created_at'],
         ],
     ]);
 } catch (Throwable $e) {
