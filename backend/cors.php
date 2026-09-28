@@ -1,4 +1,4 @@
-<?php
+c <?php
 
 /** Allows credentialed requests only from explicitly configured browser origins. */
 function configureCors(array $methods): void
